@@ -1,0 +1,622 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Upload Tool</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .container {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        max-width: 600px;
+        width: 100%;
+        overflow: hidden;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: 28px;
+        margin-bottom: 8px;
+        font-weight: 600;
+      }
+
+      .header p {
+        font-size: 14px;
+        opacity: 0.9;
+        margin: 0;
+      }
+
+      .content {
+        padding: 2rem;
+      }
+
+      .upload-area {
+        border: 2px dashed #667eea;
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: #f8f9ff;
+      }
+
+      .upload-area:hover {
+        border-color: #764ba2;
+        background: #f0f1ff;
+        transform: translateY(-2px);
+      }
+
+      .upload-area.drag-over {
+        border-color: #764ba2;
+        background: #e8e9ff;
+        transform: scale(1.02);
+      }
+
+      .upload-icon {
+        font-size: 48px;
+        color: #667eea;
+        margin-bottom: 12px;
+        display: block;
+      }
+
+      .upload-text h3 {
+        font-size: 16px;
+        color: #333;
+        margin-bottom: 4px;
+      }
+
+      .upload-text p {
+        font-size: 13px;
+        color: #666;
+        margin: 0;
+      }
+
+      input[type="file"] {
+        display: none;
+      }
+
+      .preview-container {
+        display: none;
+        margin-top: 1.5rem;
+      }
+
+      .preview-image {
+        width: 100%;
+        max-height: 300px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        border: 1px solid #e0e0e0;
+      }
+
+      .file-name {
+        font-size: 13px;
+        color: #666;
+        margin-bottom: 1rem;
+        text-align: center;
+        word-break: break-all;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 12px;
+        margin-top: 1rem;
+      }
+
+      .btn {
+        flex: 1;
+        padding: 12px 16px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+      }
+
+      .btn-primary:active {
+        transform: translateY(0);
+      }
+
+      .btn-secondary {
+        background: #f0f0f0;
+        color: #333;
+        border: 1px solid #ddd;
+      }
+
+      .btn-secondary:hover {
+        background: #e8e8e8;
+      }
+
+      .loading-container {
+        display: none;
+        text-align: center;
+        padding: 2rem 0;
+      }
+
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid #f0f0f0;
+        border-top: 3px solid #667eea;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin: 0 auto 1rem;
+      }
+
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loading-text {
+        color: #666;
+        font-size: 14px;
+      }
+
+      .success-container {
+        display: none;
+      }
+
+      .alert {
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        display: flex;
+        gap: 12px;
+      }
+
+      .alert-success {
+        background: #f0fdf4;
+        border: 1px solid #86efac;
+        color: #166534;
+      }
+
+      .alert-error {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        color: #991b1b;
+      }
+
+      .alert-icon {
+        font-size: 20px;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+
+      .alert-content h4 {
+        margin: 0 0 4px;
+        font-size: 15px;
+      }
+
+      .alert-content p {
+        margin: 0;
+        font-size: 13px;
+      }
+
+      .error-container {
+        display: none;
+      }
+
+      .url-box {
+        background: #f8f9fa;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .url-label {
+        font-size: 11px;
+        color: #999;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+        display: block;
+      }
+
+      .url-input-group {
+        display: flex;
+        gap: 8px;
+      }
+
+      .url-input {
+        flex: 1;
+        padding: 10px 12px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-family: "Monaco", "Courier New", monospace;
+        font-size: 13px;
+        color: #333;
+        background: white;
+      }
+
+      .url-input:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+      }
+
+      .copy-btn {
+        padding: 10px 16px;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 14px;
+      }
+
+      .copy-btn:hover {
+        background: #f0f0f0;
+      }
+
+      .copy-btn.copied {
+        background: #dcfce7;
+        border-color: #86efac;
+        color: #166534;
+      }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 1.5rem;
+      }
+
+      .info-item {
+        background: #f8f9fa;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+      }
+
+      .info-label {
+        font-size: 12px;
+        color: #999;
+        margin-bottom: 4px;
+      }
+
+      .info-value {
+        font-size: 14px;
+        font-weight: 500;
+        color: #333;
+        word-break: break-all;
+      }
+
+      .btn-block {
+        width: 100%;
+        display: block;
+      }
+
+      @media (max-width: 600px) {
+        .container {
+          margin: 0;
+        }
+
+        .header {
+          padding: 1.5rem;
+        }
+
+        .header h1 {
+          font-size: 24px;
+        }
+
+        .content {
+          padding: 1.5rem;
+        }
+
+        .upload-area {
+          padding: 1.5rem;
+        }
+
+        .upload-icon {
+          font-size: 40px;
+        }
+
+        .button-group {
+          flex-direction: column;
+        }
+
+        .info-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header -->
+      <div class="header">
+        <h1>Upload Image</h1>
+        <p>Upload your image to get a direct S3 URL</p>
+      </div>
+
+      <!-- Content -->
+      <div class="content">
+        <!-- Upload Area -->
+        <div id="uploadArea" class="upload-area">
+          <input type="file" id="fileInput" accept="image/*" />
+          <i class="fas fa-cloud-upload-alt upload-icon"></i>
+          <div class="upload-text">
+            <h3>Click to upload or drag and drop</h3>
+            <p>PNG, JPG, GIF up to 10MB</p>
+          </div>
+        </div>
+
+        <!-- Preview Container -->
+        <div id="previewContainer" class="preview-container">
+          <img id="previewImage" class="preview-image" alt="Preview" />
+          <p id="fileName" class="file-name"></p>
+          <div class="button-group">
+            <button id="uploadBtn" class="btn btn-primary">
+              <i class="fas fa-upload"></i> Upload to S3
+            </button>
+            <button id="cancelBtn" class="btn btn-secondary">Clear</button>
+          </div>
+        </div>
+
+        <!-- Loading Container -->
+        <div id="loadingContainer" class="loading-container">
+          <div class="spinner"></div>
+          <p class="loading-text">Uploading your image...</p>
+        </div>
+
+        <!-- Success Container -->
+        <div id="successContainer" class="success-container">
+          <div class="alert alert-success">
+            <i class="fas fa-check-circle alert-icon"></i>
+            <div class="alert-content">
+              <h4>Success</h4>
+              <p>Your image has been uploaded successfully</p>
+            </div>
+          </div>
+
+          <div class="url-box">
+            <label class="url-label">Image URL</label>
+            <div class="url-input-group">
+              <input type="text" id="urlInput" class="url-input" readonly />
+              <button id="copyBtn" class="copy-btn">
+                <i class="fas fa-copy"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="info-grid">
+            <div class="info-item">
+              <div class="info-label">File name</div>
+              <div class="info-value" id="resultFileName"></div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">File size</div>
+              <div class="info-value" id="resultFileSize"></div>
+            </div>
+          </div>
+
+          <button id="resetBtn" class="btn btn-secondary btn-block">
+            <i class="fas fa-redo"></i> Upload another image
+          </button>
+        </div>
+
+        <!-- Error Container -->
+        <div id="errorContainer" class="error-container">
+          <div class="alert alert-error">
+            <i class="fas fa-exclamation-circle alert-icon"></i>
+            <div class="alert-content">
+              <h4>Error</h4>
+              <p id="errorMessage"></p>
+            </div>
+          </div>
+          <button id="tryAgainBtn" class="btn btn-primary btn-block">
+            Try again
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const API_URL = "http://localhost:8000/api/v1/upload_image_to_get_url";
+
+      const fileInput = document.getElementById("fileInput");
+      const uploadArea = document.getElementById("uploadArea");
+      const previewContainer = document.getElementById("previewContainer");
+      const previewImage = document.getElementById("previewImage");
+      const fileName = document.getElementById("fileName");
+      const uploadBtn = document.getElementById("uploadBtn");
+      const cancelBtn = document.getElementById("cancelBtn");
+      const loadingContainer = document.getElementById("loadingContainer");
+      const successContainer = document.getElementById("successContainer");
+      const errorContainer = document.getElementById("errorContainer");
+      const resetBtn = document.getElementById("resetBtn");
+      const tryAgainBtn = document.getElementById("tryAgainBtn");
+      const copyBtn = document.getElementById("copyBtn");
+
+      let selectedFile = null;
+
+      // Click to upload
+      uploadArea.addEventListener("click", () => fileInput.click());
+
+      // Drag and drop
+      uploadArea.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        uploadArea.classList.add("drag-over");
+      });
+
+      uploadArea.addEventListener("dragleave", () => {
+        uploadArea.classList.remove("drag-over");
+      });
+
+      uploadArea.addEventListener("drop", (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove("drag-over");
+
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+          handleFileSelect(files[0]);
+        }
+      });
+
+      // File input change
+      fileInput.addEventListener("change", (e) => {
+        if (e.target.files.length > 0) {
+          handleFileSelect(e.target.files[0]);
+        }
+      });
+
+      // Button events
+      uploadBtn.addEventListener("click", uploadImage);
+      cancelBtn.addEventListener("click", cancelUpload);
+      resetBtn.addEventListener("click", resetForm);
+      tryAgainBtn.addEventListener("click", resetForm);
+      copyBtn.addEventListener("click", copyToClipboard);
+
+      function handleFileSelect(file) {
+        if (!file.type.startsWith("image/")) {
+          showError("Please select a valid image file (PNG, JPG, GIF, etc.)");
+          return;
+        }
+
+        if (file.size > 10 * 1024 * 1024) {
+          showError("File size must be less than 10MB");
+          return;
+        }
+
+        selectedFile = file;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          previewImage.src = e.target.result;
+          fileName.textContent = file.name;
+          uploadArea.style.display = "none";
+          previewContainer.style.display = "block";
+          errorContainer.style.display = "none";
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function cancelUpload() {
+        selectedFile = null;
+        fileInput.value = "";
+        previewContainer.style.display = "none";
+        uploadArea.style.display = "block";
+      }
+
+      function resetForm() {
+        selectedFile = null;
+        fileInput.value = "";
+        previewContainer.style.display = "none";
+        loadingContainer.style.display = "none";
+        successContainer.style.display = "none";
+        errorContainer.style.display = "none";
+        uploadArea.style.display = "block";
+      }
+
+      function uploadImage() {
+        if (!selectedFile) return;
+
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+
+        previewContainer.style.display = "none";
+        loadingContainer.style.display = "block";
+        errorContainer.style.display = "none";
+
+        fetch(API_URL, {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              showSuccess(data);
+            } else {
+              showError(data.message || "Upload failed");
+            }
+          })
+          .catch((error) => {
+            showError(
+              "Network error. Make sure the API server is running and accessible at: " +
+                API_URL,
+            );
+            console.error("Upload error:", error);
+          });
+      }
+
+      function showSuccess(data) {
+        loadingContainer.style.display = "none";
+        successContainer.style.display = "block";
+        previewContainer.style.display = "none";
+
+        document.getElementById("urlInput").value = data.url;
+        document.getElementById("resultFileName").textContent = data.filename;
+        document.getElementById("resultFileSize").textContent =
+          (data.file_size / 1024).toFixed(2) + " KB";
+      }
+
+      function showError(message) {
+        loadingContainer.style.display = "none";
+        errorContainer.style.display = "block";
+        previewContainer.style.display = "none";
+        uploadArea.style.display = "none";
+        document.getElementById("errorMessage").textContent = message;
+      }
+
+      function copyToClipboard() {
+        const urlInput = document.getElementById("urlInput");
+        urlInput.select();
+        document.execCommand("copy");
+
+        const originalText = copyBtn.innerHTML;
+        copyBtn.innerHTML = '<i class="fas fa-check"></i>';
+        copyBtn.classList.add("copied");
+
+        setTimeout(() => {
+          copyBtn.innerHTML = originalText;
+          copyBtn.classList.remove("copied");
+        }, 2000);
+      }
+    </script>
+  </body>
+</html>
