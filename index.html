@@ -93,97 +93,6 @@
         filter: blur(40px);
       }
 
-      .cloud {
-        position: fixed;
-        font-size: clamp(50px, 12vw, 80px);
-        opacity: 0.6;
-        z-index: 2;
-        pointer-events: none;
-        animation: drift linear infinite;
-      }
-
-      .cloud:nth-child(1) {
-        top: 10%;
-        left: -100px;
-        animation-duration: 25s;
-        animation-delay: 0s;
-      }
-      .cloud:nth-child(2) {
-        top: 25%;
-        left: -80px;
-        animation-duration: 30s;
-        animation-delay: 5s;
-        font-size: clamp(45px, 10vw, 70px);
-        opacity: 0.5;
-      }
-      .cloud:nth-child(3) {
-        top: 40%;
-        left: -120px;
-        animation-duration: 35s;
-        animation-delay: 10s;
-        font-size: clamp(55px, 13vw, 90px);
-        opacity: 0.4;
-      }
-
-      @keyframes drift {
-        0% {
-          transform: translateX(-100px);
-        }
-        100% {
-          transform: translateX(100vw);
-        }
-      }
-
-      .airplane {
-        position: fixed;
-        font-size: clamp(25px, 6vw, 40px);
-        z-index: 3;
-        pointer-events: none;
-        animation: fly linear infinite;
-      }
-
-      .airplane:nth-child(4) {
-        top: 15%;
-        right: -50px;
-        animation-duration: 20s;
-        animation-delay: 0s;
-      }
-      .airplane:nth-child(5) {
-        top: 50%;
-        right: -50px;
-        animation-duration: 25s;
-        animation-delay: 5s;
-        font-size: clamp(20px, 5vw, 35px);
-      }
-      .airplane:nth-child(6) {
-        top: 70%;
-        right: -50px;
-        animation-duration: 30s;
-        animation-delay: 10s;
-        font-size: clamp(28px, 7vw, 45px);
-        opacity: 0.8;
-      }
-
-      @keyframes fly {
-        0% {
-          transform: translateX(0) translateY(0);
-        }
-        50% {
-          transform: translateX(-30px) translateY(-10px);
-        }
-        100% {
-          transform: translateX(-100vw) translateY(0);
-        }
-      }
-
-      .airplane::before {
-        content: "✈ ✈ ✈";
-        position: absolute;
-        right: 50px;
-        font-size: clamp(12px, 3vw, 20px);
-        opacity: 0.1;
-      }
-
       .container {
         background: white;
         border-radius: var(--border-radius-lg);
@@ -213,15 +122,6 @@
         font-size: clamp(80px, 25vw, 120px);
         opacity: 0.1;
         animation: float 6s ease-in-out infinite;
-      }
-      .header-decoration2 {
-        position: absolute;
-        bottom: -30px;
-        left: -20px;
-        font-size: clamp(70px, 20vw, 100px);
-        opacity: 0.12;
-        animation: float 7s ease-in-out infinite;
-        animation-delay: 1s;
       }
 
       @keyframes float {
@@ -329,18 +229,6 @@
         overflow: hidden;
       }
 
-      .upload-area::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="sky-pattern" patternUnits="userSpaceOnUse" width="30" height="30"><circle cx="15" cy="15" r="1" fill="rgba(255,144,84,0.05)"/><path d="M5 15 Q15 10 25 15" stroke="rgba(255,144,84,0.05)" stroke-width="0.5" fill="none"/></pattern></defs><rect width="100" height="100" fill="url(%23sky-pattern)"/></svg>');
-        pointer-events: none;
-        border-radius: var(--border-radius-md);
-      }
-
       .upload-area:hover {
         border-color: #ff6b35;
         background: linear-gradient(
@@ -367,6 +255,7 @@
         position: relative;
         z-index: 1;
       }
+
       .upload-icon-wrapper {
         position: relative;
         margin-bottom: var(--spacing-md);
@@ -424,6 +313,7 @@
         margin-bottom: var(--spacing-xs);
         font-weight: 700;
       }
+
       .upload-text p {
         font-size: var(--font-size-sm);
         color: #5f6368;
@@ -499,6 +389,7 @@
         transform: translateY(-4px);
         box-shadow: 0 10px 30px rgba(255, 107, 53, 0.5);
       }
+
       .btn-primary:active {
         transform: translateY(-2px);
       }
@@ -508,6 +399,7 @@
         color: #202124;
         border: 1.5px solid #e8eaed;
       }
+
       .btn-secondary:hover {
         background: #e8e8e8;
         border-color: #ff9054;
@@ -592,11 +484,13 @@
         flex-shrink: 0;
         margin-top: 2px;
       }
+
       .alert-content h4 {
         margin: 0 0 4px;
         font-size: var(--font-size-lg);
         font-weight: 700;
       }
+
       .alert-content p {
         margin: 0;
         font-size: var(--font-size-xs);
@@ -701,44 +595,6 @@
         box-shadow: 0 4px 12px rgba(52, 168, 83, 0.3);
       }
 
-      .info-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: var(--spacing-md);
-        margin-bottom: var(--spacing-lg);
-      }
-
-      .info-item {
-        background: linear-gradient(
-          135deg,
-          rgba(255, 144, 84, 0.08) 0%,
-          rgba(255, 107, 53, 0.08) 100%
-        );
-        padding: var(--spacing-md);
-        border-radius: var(--border-radius-sm);
-        border: 1px solid rgba(255, 144, 84, 0.15);
-      }
-
-      .info-label {
-        font-size: var(--font-size-xs);
-        color: #5f6368;
-        text-transform: uppercase;
-        margin-bottom: var(--spacing-xs);
-        font-weight: 700;
-        letter-spacing: 0.3px;
-      }
-      .info-value {
-        font-size: var(--font-size-base);
-        font-weight: 700;
-        color: #ff6b35;
-        word-break: break-all;
-      }
-
-      .btn-block {
-        width: 100%;
-        display: block;
-      }
-
       .copy-toast {
         position: fixed;
         bottom: 20px;
@@ -765,49 +621,27 @@
         }
       }
 
-      @keyframes toastSlideOut {
-        from {
-          transform: translateX(0);
-          opacity: 1;
-        }
-        to {
-          transform: translateX(400px);
-          opacity: 0;
-        }
-      }
-
-      .debug-info {
-        background: #f5f5f5;
-        padding: 10px;
-        border-radius: 8px;
-        margin: 10px 0;
-        font-size: 12px;
-        display: none;
-      }
-
-      .debug-info.show {
-        display: block;
-      }
-
       @media (max-width: 639px) {
         .button-group {
           flex-direction: column;
         }
+
         .btn {
           min-width: 100%;
         }
-        .info-grid {
-          grid-template-columns: 1fr;
-        }
+
         .url-input-group {
           flex-direction: column;
         }
+
         .url-input {
           min-width: 100%;
         }
+
         .copy-btn {
           width: 100%;
         }
+
         .copy-toast {
           left: 20px;
           right: 20px;
@@ -819,6 +653,7 @@
           background: #1e1e1e;
           box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
         }
+
         .upload-area {
           border-color: #ff9054;
           background: linear-gradient(
@@ -827,35 +662,38 @@
             rgba(255, 107, 53, 0.1) 100%
           );
         }
+
         .upload-text h3 {
           color: #e0e0e0;
         }
+
         .upload-text p {
           color: #b0b0b0;
         }
+
         .file-name {
           color: #b0b0b0;
         }
+
         .url-input {
           background: #2a2a2a;
           color: #e0e0e0;
           border-color: #444;
         }
+
         .url-input:focus {
           border-color: #ff9054;
         }
+
         .btn-secondary {
           background: #2a2a2a;
           color: #e0e0e0;
           border-color: #444;
         }
+
         .btn-secondary:hover {
           background: #333;
           border-color: #ff9054;
-        }
-        .debug-info {
-          background: #2a2a2a;
-          color: #e0e0e0;
         }
       }
 
@@ -869,18 +707,9 @@
     </style>
   </head>
   <body>
-    <div class="cloud">☁️</div>
-    <div class="cloud">☁️</div>
-    <div class="cloud">☁️</div>
-
-    <div class="airplane">✈️</div>
-    <div class="airplane">✈️</div>
-    <div class="airplane">✈️</div>
-
     <div class="container">
       <div class="header">
         <div class="header-decoration">✈️</div>
-        <div class="header-decoration2">☁️</div>
 
         <div class="logo-section">
           <div class="logo">T</div>
@@ -898,6 +727,7 @@
               <i class="fas fa-cloud-upload-alt upload-icon"></i>
             </div>
             <div class="upload-text">
+              <h3>Upload Image</h3>
               <p>Drag your image to take flight, or click to upload</p>
             </div>
           </div>
@@ -923,20 +753,20 @@
           <div class="alert alert-success">
             <i class="fas fa-check-circle alert-icon"></i>
             <div class="alert-content">
-              <h4>Landed Successfully! 🛬</h4>
-              <p>Your image has arrived safely in the cloud</p>
+              <h4>Upload Successful! 🛬</h4>
+              <p id="successMessage">Your image has been uploaded to S3</p>
             </div>
           </div>
 
           <div class="url-box">
-            <label class="url-label">📋 Image URL (Your S3 Link)</label>
+            <label class="url-label">📋 Image URL</label>
             <div class="url-input-group">
               <input
                 type="text"
                 id="urlInput"
                 class="url-input"
                 readonly
-                placeholder="Loading URL..."
+                placeholder="URL will appear here..."
               />
               <button
                 id="copyBtn"
@@ -946,30 +776,13 @@
                 <i class="fas fa-copy"></i>
               </button>
             </div>
-            <small
-              style="
-                display: block;
-                margin-top: 8px;
-                color: #5f6368;
-                font-size: 12px;
-              "
-            >
-              ✓ Click the copy button or select and copy the URL above
-            </small>
           </div>
 
-          <div class="info-grid">
-            <div class="info-item">
-              <div class="info-label">📁 File Name</div>
-              <div class="info-value" id="resultFileName"></div>
-            </div>
-            <div class="info-item">
-              <div class="info-label">💾 File Size</div>
-              <div class="info-value" id="resultFileSize"></div>
-            </div>
-          </div>
-
-          <button id="resetBtn" class="btn btn-primary btn-block">
+          <button
+            id="resetBtn"
+            class="btn btn-primary"
+            style="width: 100%; margin-top: var(--spacing-lg)"
+          >
             <i class="fas fa-redo"></i> Upload Another ✈️
           </button>
         </div>
@@ -978,18 +791,19 @@
           <div class="alert alert-error">
             <i class="fas fa-exclamation-circle alert-icon"></i>
             <div class="alert-content">
-              <h4>Flight Cancelled ✈️</h4>
+              <h4>Upload Failed ✈️</h4>
               <p id="errorMessage"></p>
             </div>
           </div>
-          <button id="tryAgainBtn" class="btn btn-primary btn-block">
-            <i class="fas fa-redo"></i> Retry Flight
+          <button id="tryAgainBtn" class="btn btn-primary" style="width: 100%">
+            <i class="fas fa-redo"></i> Try Again
           </button>
         </div>
       </div>
     </div>
 
     <script>
+      // ✅ API URL
       const API_URL =
         "https://page-api.triwize.com/api/v1/upload_image_to_get_url";
 
@@ -1006,6 +820,7 @@
       const resetBtn = document.getElementById("resetBtn");
       const tryAgainBtn = document.getElementById("tryAgainBtn");
       const copyBtn = document.getElementById("copyBtn");
+      const urlInput = document.getElementById("urlInput");
 
       let selectedFile = null;
 
@@ -1043,12 +858,12 @@
 
       function handleFileSelect(file) {
         if (!file.type.startsWith("image/")) {
-          showError("Please select a valid image file (PNG, JPG, GIF, etc.)");
+          showError("Please select a valid image file");
           return;
         }
 
-        if (file.size > 10 * 1024 * 1024) {
-          showError("File size must be less than 10MB");
+        if (file.size > 50 * 1024 * 1024) {
+          showError("File size must be less than 50MB");
           return;
         }
 
@@ -1107,50 +922,30 @@
             return response.json();
           })
           .then((data) => {
-            // Handle different response formats
-            if (data.success || data.url) {
-              showSuccess(data);
-            } else if (data.error) {
-              showError(data.error);
+            // Handle both possible response formats
+            const imageUrl = data.url || data.image_url || "";
+
+            if (imageUrl) {
+              showSuccess(imageUrl);
             } else {
-              showError("Upload failed - no URL in response");
+              showError("Upload successful but no URL returned from server");
             }
           })
           .catch((error) => {
-            let errorMsg = "Upload failed. Check the console and make sure:\n";
-            errorMsg +=
-              "1. Backend is running on https://page-api.triwize.com\n";
-            errorMsg += "2. CORS middleware is enabled\n";
-            errorMsg +=
-              "3. 'https://page-api.triwize.com' is in CORS_ORIGINS\n\n";
-            errorMsg += "Error: " + error.message;
-
-            showError(errorMsg);
+            showError(error.message);
           });
       }
 
-      function showSuccess(data) {
+      function showSuccess(imageUrl) {
         loadingContainer.style.display = "none";
         successContainer.style.display = "block";
         previewContainer.style.display = "none";
         errorContainer.style.display = "none";
 
-        // Handle different response formats
-        const imageUrl = data.url || data.image_url || "";
-        const filename =
-          data.filename || data.file_name || selectedFile.name || "unknown";
-        const fileSize = data.file_size
-          ? (data.file_size / 1024).toFixed(2)
-          : (selectedFile.size / 1024).toFixed(2);
-
-        const urlInput = document.getElementById("urlInput");
-        const fileNameEl = document.getElementById("resultFileName");
-        const fileSizeEl = document.getElementById("resultFileSize");
-
+        // Set the URL in the input field
         urlInput.value = imageUrl;
-        fileNameEl.textContent = filename;
-        fileSizeEl.textContent = fileSize + " KB";
 
+        // Scroll to URL box
         setTimeout(() => {
           const urlBox = document.querySelector(".url-box");
           if (urlBox) {
@@ -1168,7 +963,6 @@
       }
 
       function copyToClipboard() {
-        const urlInput = document.getElementById("urlInput");
         const urlValue = urlInput.value;
 
         if (!urlValue) {
@@ -1182,16 +976,16 @@
               showCopySuccess();
             })
             .catch(() => {
-              fallbackCopy(urlInput);
+              fallbackCopy();
             });
         } else {
-          fallbackCopy(urlInput);
+          fallbackCopy();
         }
       }
 
-      function fallbackCopy(element) {
-        element.select();
-        element.setSelectionRange(0, 99999);
+      function fallbackCopy() {
+        urlInput.select();
+        urlInput.setSelectionRange(0, 99999);
         document.execCommand("copy");
         showCopySuccess();
       }
@@ -1220,7 +1014,7 @@
         document.body.appendChild(toast);
 
         setTimeout(() => {
-          toast.style.animation = "toastSlideOut 0.3s ease-out";
+          toast.style.animation = "none";
           setTimeout(() => toast.remove(), 300);
         }, 2000);
       }
