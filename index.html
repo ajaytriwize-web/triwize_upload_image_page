@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Triwize Image Upload - DEBUG</title>
+    <title>Triwize Image Upload</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -13,6 +13,29 @@
         margin: 0;
         padding: 0;
         box-sizing: border-box;
+      }
+
+      :root {
+        --spacing-xs: clamp(8px, 2vw, 12px);
+        --spacing-sm: clamp(12px, 3vw, 16px);
+        --spacing-md: clamp(16px, 4vw, 24px);
+        --spacing-lg: clamp(20px, 5vw, 32px);
+        --spacing-xl: clamp(24px, 6vw, 48px);
+
+        --font-size-xs: clamp(11px, 2vw, 13px);
+        --font-size-sm: clamp(13px, 2.5vw, 15px);
+        --font-size-base: clamp(14px, 3vw, 16px);
+        --font-size-lg: clamp(16px, 3.5vw, 18px);
+        --font-size-xl: clamp(20px, 4.5vw, 24px);
+        --font-size-2xl: clamp(26px, 7vw, 32px);
+        --font-size-3xl: clamp(32px, 8vw, 40px);
+
+        --border-radius-sm: clamp(10px, 2vw, 14px);
+        --border-radius-md: clamp(12px, 2.5vw, 18px);
+        --border-radius-lg: clamp(14px, 3vw, 28px);
+
+        --header-padding: clamp(1.5rem, 5vw, 3rem);
+        --content-padding: clamp(1.5rem, 4vw, 2.5rem);
       }
 
       body {
@@ -29,198 +52,977 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 20px;
+        padding: var(--spacing-md);
+        position: relative;
+        overflow: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 60%;
+        background: linear-gradient(
+          to bottom,
+          #87ceeb 0%,
+          #b0e0e6 30%,
+          #e0f6ff 60%,
+          transparent 100%
+        );
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      body::after {
+        content: "";
+        position: fixed;
+        bottom: 15%;
+        right: 10%;
+        width: clamp(200px, 40vw, 300px);
+        height: clamp(200px, 40vw, 300px);
+        background: radial-gradient(
+          circle,
+          rgba(255, 144, 84, 0.3) 0%,
+          transparent 70%
+        );
+        border-radius: 50%;
+        z-index: 1;
+        pointer-events: none;
+        filter: blur(40px);
+      }
+
+      .cloud {
+        position: fixed;
+        font-size: clamp(50px, 12vw, 80px);
+        opacity: 0.6;
+        z-index: 2;
+        pointer-events: none;
+        animation: drift linear infinite;
+      }
+
+      .cloud:nth-child(1) {
+        top: 10%;
+        left: -100px;
+        animation-duration: 25s;
+        animation-delay: 0s;
+      }
+      .cloud:nth-child(2) {
+        top: 25%;
+        left: -80px;
+        animation-duration: 30s;
+        animation-delay: 5s;
+        font-size: clamp(45px, 10vw, 70px);
+        opacity: 0.5;
+      }
+      .cloud:nth-child(3) {
+        top: 40%;
+        left: -120px;
+        animation-duration: 35s;
+        animation-delay: 10s;
+        font-size: clamp(55px, 13vw, 90px);
+        opacity: 0.4;
+      }
+
+      @keyframes drift {
+        0% {
+          transform: translateX(-100px);
+        }
+        100% {
+          transform: translateX(100vw);
+        }
+      }
+
+      .airplane {
+        position: fixed;
+        font-size: clamp(25px, 6vw, 40px);
+        z-index: 3;
+        pointer-events: none;
+        animation: fly linear infinite;
+      }
+
+      .airplane:nth-child(4) {
+        top: 15%;
+        right: -50px;
+        animation-duration: 20s;
+        animation-delay: 0s;
+      }
+      .airplane:nth-child(5) {
+        top: 50%;
+        right: -50px;
+        animation-duration: 25s;
+        animation-delay: 5s;
+        font-size: clamp(20px, 5vw, 35px);
+      }
+      .airplane:nth-child(6) {
+        top: 70%;
+        right: -50px;
+        animation-duration: 30s;
+        animation-delay: 10s;
+        font-size: clamp(28px, 7vw, 45px);
+        opacity: 0.8;
+      }
+
+      @keyframes fly {
+        0% {
+          transform: translateX(0) translateY(0);
+        }
+        50% {
+          transform: translateX(-30px) translateY(-10px);
+        }
+        100% {
+          transform: translateX(-100vw) translateY(0);
+        }
+      }
+
+      .airplane::before {
+        content: "✈ ✈ ✈";
+        position: absolute;
+        right: 50px;
+        font-size: clamp(12px, 3vw, 20px);
+        opacity: 0.1;
       }
 
       .container {
         background: white;
-        border-radius: 20px;
+        border-radius: var(--border-radius-lg);
         box-shadow: 0 30px 80px rgba(0, 0, 0, 0.25);
-        max-width: 800px;
+        max-width: 700px;
         width: 100%;
-        padding: 40px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        max-height: 90vh;
+        position: relative;
+        z-index: 10;
       }
 
-      h1 {
-        color: #ff6b35;
-        margin-bottom: 10px;
+      .header {
+        background: linear-gradient(135deg, #ff9054 0%, #ff6b35 100%);
+        color: white;
+        padding: var(--header-padding);
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .header-decoration {
+        position: absolute;
+        top: -20px;
+        right: -30px;
+        font-size: clamp(80px, 25vw, 120px);
+        opacity: 0.1;
+        animation: float 6s ease-in-out infinite;
+      }
+      .header-decoration2 {
+        position: absolute;
+        bottom: -30px;
+        left: -20px;
+        font-size: clamp(70px, 20vw, 100px);
+        opacity: 0.12;
+        animation: float 7s ease-in-out infinite;
+        animation-delay: 1s;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px) rotate(0deg);
+        }
+        50% {
+          transform: translateY(-20px) rotate(10deg);
+        }
+      }
+
+      .logo-section {
+        margin-bottom: var(--spacing-lg);
+        position: relative;
+        z-index: 2;
+        animation: slideDown 0.6s ease-out;
+      }
+
+      @keyframes slideDown {
+        from {
+          transform: translateY(-20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .logo {
+        width: clamp(50px, 12vw, 70px);
+        height: clamp(50px, 12vw, 70px);
+        background: white;
+        border-radius: var(--border-radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto var(--spacing-md);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        font-size: clamp(24px, 6vw, 32px);
+        font-weight: 800;
+        background: linear-gradient(135deg, #ff9054 0%, #ff6b35 100%);
+        color: white;
+        border: 3px solid white;
+        animation: rotate 4s ease-in-out infinite;
+      }
+
+      @keyframes rotate {
+        0%,
+        100% {
+          transform: rotate(0deg) scale(1);
+        }
+        50% {
+          transform: rotate(5deg) scale(1.05);
+        }
+      }
+
+      .header h1 {
+        font-size: var(--font-size-3xl);
+        margin-bottom: var(--spacing-xs);
+        font-weight: 800;
+        letter-spacing: -1px;
+        position: relative;
+        z-index: 2;
+        line-height: 1.2;
+      }
+
+      .header p {
+        font-size: var(--font-size-sm);
+        opacity: 0.95;
+        margin: 0;
+        position: relative;
+        z-index: 2;
+      }
+
+      .brand-name {
+        font-size: var(--font-size-xs);
+        opacity: 0.9;
+        margin-top: var(--spacing-md);
+        font-weight: 600;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        position: relative;
+        z-index: 2;
+      }
+
+      .content {
+        padding: var(--content-padding);
       }
 
       .upload-area {
-        border: 2px dashed #ff9054;
-        border-radius: 12px;
-        padding: 40px;
+        border: clamp(2px, 0.5vw, 2.5px) dashed #ff9054;
+        border-radius: var(--border-radius-md);
+        padding: clamp(1.5rem, 5vw, 3rem) clamp(1rem, 3vw, 2rem);
         text-align: center;
         cursor: pointer;
-        margin: 20px 0;
+        transition: all 0.3s ease;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 144, 84, 0.08) 0%,
+          rgba(255, 107, 53, 0.08) 100%
+        );
+        position: relative;
+        overflow: hidden;
+      }
+
+      .upload-area::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="sky-pattern" patternUnits="userSpaceOnUse" width="30" height="30"><circle cx="15" cy="15" r="1" fill="rgba(255,144,84,0.05)"/><path d="M5 15 Q15 10 25 15" stroke="rgba(255,144,84,0.05)" stroke-width="0.5" fill="none"/></pattern></defs><rect width="100" height="100" fill="url(%23sky-pattern)"/></svg>');
+        pointer-events: none;
+        border-radius: var(--border-radius-md);
       }
 
       .upload-area:hover {
-        background: #fff5f0;
+        border-color: #ff6b35;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 144, 84, 0.15) 0%,
+          rgba(255, 107, 53, 0.15) 100%
+        );
+        transform: translateY(-5px);
+        box-shadow: 0 12px 35px rgba(255, 107, 53, 0.25);
+      }
+
+      .upload-area.drag-over {
+        border-color: #ff5722;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 144, 84, 0.2) 0%,
+          rgba(255, 107, 53, 0.2) 100%
+        );
+        transform: scale(1.03);
+        box-shadow: 0 15px 40px rgba(255, 107, 53, 0.3);
+      }
+
+      .upload-content {
+        position: relative;
+        z-index: 1;
+      }
+      .upload-icon-wrapper {
+        position: relative;
+        margin-bottom: var(--spacing-md);
+        display: inline-block;
+      }
+
+      .upload-icon {
+        font-size: clamp(40px, 10vw, 56px);
+        background: linear-gradient(135deg, #ff9054 0%, #ff6b35 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        display: block;
+        animation: floatAnimation 3s ease-in-out infinite;
+      }
+
+      .upload-icon::before {
+        content: "";
+        position: absolute;
+        width: clamp(60px, 15vw, 80px);
+        height: clamp(60px, 15vw, 80px);
+        border: 2px solid rgba(255, 144, 84, 0.1);
+        border-radius: 50%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        animation: pulse 2s ease-in-out infinite;
+      }
+
+      @keyframes floatAnimation {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-16px);
+        }
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: translate(-50%, -50%) scale(1);
+          opacity: 1;
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(1.3);
+          opacity: 0;
+        }
+      }
+
+      .upload-text h3 {
+        font-size: var(--font-size-lg);
+        color: #202124;
+        margin-bottom: var(--spacing-xs);
+        font-weight: 700;
+      }
+      .upload-text p {
+        font-size: var(--font-size-sm);
+        color: #5f6368;
+        margin: 0;
+        line-height: 1.5;
       }
 
       input[type="file"] {
         display: none;
       }
 
-      .btn {
-        background: linear-gradient(135deg, #ff9054 0%, #ff6b35 100%);
-        color: white;
-        border: none;
-        padding: 12px 24px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: bold;
-        margin: 10px 5px;
+      .preview-container {
+        display: none;
+        animation: fadeIn 0.4s ease-out;
       }
 
-      .btn:hover {
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .preview-image {
+        width: 100%;
+        max-height: clamp(200px, 60vw, 300px);
+        object-fit: cover;
+        border-radius: var(--border-radius-md);
+        margin-bottom: var(--spacing-lg);
+        border: 2px solid #ff9054;
+        box-shadow: 0 8px 25px rgba(255, 107, 53, 0.2);
+      }
+
+      .file-name {
+        font-size: var(--font-size-sm);
+        color: #5f6368;
+        margin-bottom: var(--spacing-lg);
+        text-align: center;
+        word-break: break-all;
+        font-weight: 600;
+      }
+
+      .button-group {
+        display: flex;
+        gap: var(--spacing-md);
+        margin-top: var(--spacing-lg);
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        flex: 1;
+        min-width: clamp(120px, 100%, 200px);
+        padding: clamp(10px, 2vw, 14px) clamp(12px, 3vw, 18px);
+        border: none;
+        border-radius: var(--border-radius-sm);
+        font-size: var(--font-size-sm);
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #ff9054 0%, #ff6b35 100%);
+        color: white;
+        box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 30px rgba(255, 107, 53, 0.5);
+      }
+      .btn-primary:active {
         transform: translateY(-2px);
       }
 
-      .debug-box {
-        background: #f5f5f5;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        padding: 15px;
-        margin: 15px 0;
-        font-size: 12px;
-        font-family: monospace;
-        max-height: 400px;
-        overflow-y: auto;
+      .btn-secondary {
+        background: #f0f0f0;
+        color: #202124;
+        border: 1.5px solid #e8eaed;
+      }
+      .btn-secondary:hover {
+        background: #e8e8e8;
+        border-color: #ff9054;
       }
 
-      .debug-box.error {
-        background: #ffebee;
-        border-color: #c62828;
-        color: #c62828;
-      }
-
-      .debug-box.success {
-        background: #e8f5e9;
-        border-color: #2e7d32;
-        color: #2e7d32;
-      }
-
-      .file-info {
-        background: #e3f2fd;
-        padding: 10px;
-        border-radius: 8px;
-        margin: 10px 0;
-      }
-
-      .loading {
+      .loading-container {
         display: none;
         text-align: center;
+        padding: clamp(2rem, 5vw, 3rem) 0;
       }
 
       .spinner {
+        width: clamp(40px, 10vw, 56px);
+        height: clamp(40px, 10vw, 56px);
         border: 4px solid #f0f0f0;
-        border-top: 4px solid #ff9054;
+        border-top-color: #ff9054;
+        border-right-color: #ff6b35;
         border-radius: 50%;
-        width: 40px;
-        height: 40px;
         animation: spin 1s linear infinite;
-        margin: 20px auto;
+        margin: 0 auto var(--spacing-lg);
       }
 
       @keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
+        to {
           transform: rotate(360deg);
+        }
+      }
+
+      .loading-text {
+        color: #5f6368;
+        font-size: var(--font-size-base);
+        font-weight: 600;
+      }
+
+      .success-container {
+        display: none;
+        animation: slideUp 0.5s ease-out;
+        scroll-margin-top: var(--spacing-lg);
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .alert {
+        padding: clamp(1rem, 3vw, 1.5rem);
+        border-radius: var(--border-radius-md);
+        margin-bottom: var(--spacing-lg);
+        display: flex;
+        gap: var(--spacing-md);
+      }
+
+      .alert-success {
+        background: linear-gradient(
+          135deg,
+          rgba(52, 168, 83, 0.12) 0%,
+          rgba(30, 132, 73, 0.12) 100%
+        );
+        border: 1.5px solid rgba(52, 168, 83, 0.3);
+        color: #137333;
+      }
+
+      .alert-error {
+        background: linear-gradient(
+          135deg,
+          rgba(217, 48, 37, 0.12) 0%,
+          rgba(179, 33, 30, 0.12) 100%
+        );
+        border: 1.5px solid rgba(217, 48, 37, 0.3);
+        color: #d93025;
+      }
+
+      .alert-icon {
+        font-size: clamp(18px, 4vw, 22px);
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+      .alert-content h4 {
+        margin: 0 0 4px;
+        font-size: var(--font-size-lg);
+        font-weight: 700;
+      }
+      .alert-content p {
+        margin: 0;
+        font-size: var(--font-size-xs);
+        opacity: 0.9;
+        line-height: 1.5;
+      }
+
+      .error-container {
+        display: none;
+      }
+
+      .url-box {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 144, 84, 0.08) 0%,
+          rgba(255, 107, 53, 0.08) 100%
+        );
+        border: 1.5px solid rgba(255, 144, 84, 0.3);
+        border-radius: var(--border-radius-md);
+        padding: var(--spacing-lg);
+        margin-bottom: var(--spacing-lg);
+        scroll-margin-top: var(--spacing-lg);
+      }
+
+      .url-label {
+        font-size: var(--font-size-xs);
+        color: #5f6368;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        margin-bottom: var(--spacing-md);
+        display: block;
+        font-weight: 700;
+      }
+
+      .url-input-group {
+        display: flex;
+        gap: var(--spacing-sm);
+        flex-wrap: wrap;
+      }
+
+      .url-input {
+        flex: 1;
+        min-width: clamp(150px, 100%, 300px);
+        padding: clamp(10px, 2.5vw, 14px) clamp(12px, 2.5vw, 16px);
+        border: 1.5px solid #e8eaed;
+        border-radius: var(--border-radius-sm);
+        font-family: "Monaco", "Courier New", monospace;
+        font-size: clamp(12px, 2.5vw, 13px);
+        color: #202124;
+        background: white;
+        font-weight: 500;
+        overflow-x: auto;
+        word-break: break-all;
+        line-height: 1.6;
+        transition: all 0.3s ease;
+      }
+
+      .url-input:focus {
+        outline: none;
+        border-color: #ff9054;
+        box-shadow: 0 0 0 3px rgba(255, 144, 84, 0.15);
+      }
+
+      .url-input::placeholder {
+        color: #a0a0a0;
+      }
+
+      .copy-btn {
+        padding: clamp(10px, 2.5vw, 14px) clamp(14px, 3vw, 18px);
+        background: white;
+        border: 1.5px solid #e8eaed;
+        border-radius: var(--border-radius-sm);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: var(--font-size-sm);
+        color: #5f6368;
+        font-weight: 600;
+        min-width: 48px;
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .copy-btn:hover {
+        background: linear-gradient(135deg, #ff9054 0%, #ff6b35 100%);
+        color: white;
+        border: 1.5px solid transparent;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+      }
+
+      .copy-btn:active {
+        transform: translateY(0);
+      }
+
+      .copy-btn.copied {
+        background: linear-gradient(135deg, #34a853 0%, #1e8449 100%);
+        color: white;
+        border: 1.5px solid transparent;
+        box-shadow: 0 4px 12px rgba(52, 168, 83, 0.3);
+      }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--spacing-md);
+        margin-bottom: var(--spacing-lg);
+      }
+
+      .info-item {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 144, 84, 0.08) 0%,
+          rgba(255, 107, 53, 0.08) 100%
+        );
+        padding: var(--spacing-md);
+        border-radius: var(--border-radius-sm);
+        border: 1px solid rgba(255, 144, 84, 0.15);
+      }
+
+      .info-label {
+        font-size: var(--font-size-xs);
+        color: #5f6368;
+        text-transform: uppercase;
+        margin-bottom: var(--spacing-xs);
+        font-weight: 700;
+        letter-spacing: 0.3px;
+      }
+      .info-value {
+        font-size: var(--font-size-base);
+        font-weight: 700;
+        color: #ff6b35;
+        word-break: break-all;
+      }
+
+      .btn-block {
+        width: 100%;
+        display: block;
+      }
+
+      .copy-toast {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #34a853 0%, #1e8449 100%);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(52, 168, 83, 0.3);
+        animation: toastSlideIn 0.3s ease-out;
+        z-index: 1000;
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      @keyframes toastSlideIn {
+        from {
+          transform: translateX(400px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes toastSlideOut {
+        from {
+          transform: translateX(0);
+          opacity: 1;
+        }
+        to {
+          transform: translateX(400px);
+          opacity: 0;
+        }
+      }
+
+      .debug-info {
+        background: #f5f5f5;
+        padding: 10px;
+        border-radius: 8px;
+        margin: 10px 0;
+        font-size: 12px;
+        display: none;
+      }
+
+      .debug-info.show {
+        display: block;
+      }
+
+      @media (max-width: 639px) {
+        .button-group {
+          flex-direction: column;
+        }
+        .btn {
+          min-width: 100%;
+        }
+        .info-grid {
+          grid-template-columns: 1fr;
+        }
+        .url-input-group {
+          flex-direction: column;
+        }
+        .url-input {
+          min-width: 100%;
+        }
+        .copy-btn {
+          width: 100%;
+        }
+        .copy-toast {
+          left: 20px;
+          right: 20px;
+        }
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .container {
+          background: #1e1e1e;
+          box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+        }
+        .upload-area {
+          border-color: #ff9054;
+          background: linear-gradient(
+            135deg,
+            rgba(255, 144, 84, 0.1) 0%,
+            rgba(255, 107, 53, 0.1) 100%
+          );
+        }
+        .upload-text h3 {
+          color: #e0e0e0;
+        }
+        .upload-text p {
+          color: #b0b0b0;
+        }
+        .file-name {
+          color: #b0b0b0;
+        }
+        .url-input {
+          background: #2a2a2a;
+          color: #e0e0e0;
+          border-color: #444;
+        }
+        .url-input:focus {
+          border-color: #ff9054;
+        }
+        .btn-secondary {
+          background: #2a2a2a;
+          color: #e0e0e0;
+          border-color: #444;
+        }
+        .btn-secondary:hover {
+          background: #333;
+          border-color: #ff9054;
+        }
+        .debug-info {
+          background: #2a2a2a;
+          color: #e0e0e0;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
         }
       }
     </style>
   </head>
   <body>
+    <div class="cloud">☁️</div>
+    <div class="cloud">☁️</div>
+    <div class="cloud">☁️</div>
+
+    <div class="airplane">✈️</div>
+    <div class="airplane">✈️</div>
+    <div class="airplane">✈️</div>
+
     <div class="container">
-      <h1>🔍 Image Upload - DEBUG VERSION</h1>
-      <p>This version shows exactly what's happening</p>
+      <div class="header">
+        <div class="header-decoration">✈️</div>
+        <div class="header-decoration2">☁️</div>
 
-      <div class="upload-area" id="uploadArea">
-        <p>Click to upload or drag image here</p>
-        <input type="file" id="fileInput" accept="image/*" />
+        <div class="logo-section">
+          <div class="logo">T</div>
+        </div>
+        <h1>Upload Image</h1>
+        <p>Jet-Set Your Files to S3</p>
+        <div class="brand-name">✈ Powered by Triwize</div>
       </div>
 
-      <div class="file-info" id="fileInfo" style="display: none">
-        <strong>📁 Selected File:</strong>
-        <p>Name: <span id="fileName"></span></p>
-        <p>Size: <span id="fileSize"></span> bytes</p>
-        <p>Type: <span id="fileType"></span></p>
+      <div class="content">
+        <div id="uploadArea" class="upload-area">
+          <input type="file" id="fileInput" accept="image/*" />
+          <div class="upload-content">
+            <div class="upload-icon-wrapper">
+              <i class="fas fa-cloud-upload-alt upload-icon"></i>
+            </div>
+            <div class="upload-text">
+              <p>Drag your image to take flight, or click to upload</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="previewContainer" class="preview-container">
+          <img id="previewImage" class="preview-image" alt="Preview" />
+          <p id="fileName" class="file-name"></p>
+          <div class="button-group">
+            <button id="uploadBtn" class="btn btn-primary">
+              <i class="fas fa-upload"></i> Launch to S3 🚀
+            </button>
+            <button id="cancelBtn" class="btn btn-secondary">Clear</button>
+          </div>
+        </div>
+
+        <div id="loadingContainer" class="loading-container">
+          <div class="spinner"></div>
+          <p class="loading-text">Taking off... Uploading your image ✈️</p>
+        </div>
+
+        <div id="successContainer" class="success-container">
+          <div class="alert alert-success">
+            <i class="fas fa-check-circle alert-icon"></i>
+            <div class="alert-content">
+              <h4>Landed Successfully! 🛬</h4>
+              <p>Your image has arrived safely in the cloud</p>
+            </div>
+          </div>
+
+          <div class="url-box">
+            <label class="url-label">📋 Image URL (Your S3 Link)</label>
+            <div class="url-input-group">
+              <input
+                type="text"
+                id="urlInput"
+                class="url-input"
+                readonly
+                placeholder="Loading URL..."
+              />
+              <button
+                id="copyBtn"
+                class="copy-btn"
+                title="Copy URL to clipboard"
+              >
+                <i class="fas fa-copy"></i>
+              </button>
+            </div>
+            <small
+              style="
+                display: block;
+                margin-top: 8px;
+                color: #5f6368;
+                font-size: 12px;
+              "
+            >
+              ✓ Click the copy button or select and copy the URL above
+            </small>
+          </div>
+
+          <div class="info-grid">
+            <div class="info-item">
+              <div class="info-label">📁 File Name</div>
+              <div class="info-value" id="resultFileName"></div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">💾 File Size</div>
+              <div class="info-value" id="resultFileSize"></div>
+            </div>
+          </div>
+
+          <button id="resetBtn" class="btn btn-primary btn-block">
+            <i class="fas fa-redo"></i> Upload Another ✈️
+          </button>
+        </div>
+
+        <div id="errorContainer" class="error-container">
+          <div class="alert alert-error">
+            <i class="fas fa-exclamation-circle alert-icon"></i>
+            <div class="alert-content">
+              <h4>Flight Cancelled ✈️</h4>
+              <p id="errorMessage"></p>
+            </div>
+          </div>
+          <button id="tryAgainBtn" class="btn btn-primary btn-block">
+            <i class="fas fa-redo"></i> Retry Flight
+          </button>
+        </div>
       </div>
-
-      <button id="uploadBtn" class="btn" style="display: none">
-        Upload File
-      </button>
-
-      <div class="loading" id="loading">
-        <div class="spinner"></div>
-        <p>Uploading...</p>
-      </div>
-
-      <div class="debug-box">
-        <strong>📋 DEBUG LOG:</strong>
-        <div id="debugLog"></div>
-      </div>
-
-      <div id="response"></div>
     </div>
 
     <script>
       const API_URL =
-        "https://page-api.triwize.com/api/v1/upload_image_to_get_url";
+        "https://page-api.triwize.com/api/v1/upload_image_to_get_url/";
+
+      const fileInput = document.getElementById("fileInput");
+      const uploadArea = document.getElementById("uploadArea");
+      const previewContainer = document.getElementById("previewContainer");
+      const previewImage = document.getElementById("previewImage");
+      const fileName = document.getElementById("fileName");
+      const uploadBtn = document.getElementById("uploadBtn");
+      const cancelBtn = document.getElementById("cancelBtn");
+      const loadingContainer = document.getElementById("loadingContainer");
+      const successContainer = document.getElementById("successContainer");
+      const errorContainer = document.getElementById("errorContainer");
+      const resetBtn = document.getElementById("resetBtn");
+      const tryAgainBtn = document.getElementById("tryAgainBtn");
+      const copyBtn = document.getElementById("copyBtn");
 
       let selectedFile = null;
-      const debugLog = document.getElementById("debugLog");
-      const uploadArea = document.getElementById("uploadArea");
-      const fileInput = document.getElementById("fileInput");
-      const uploadBtn = document.getElementById("uploadBtn");
-      const fileInfo = document.getElementById("fileInfo");
 
-      // Helper to log debug messages
-      function log(message, type = "info") {
-        const timestamp = new Date().toLocaleTimeString();
-        const logEntry = document.createElement("div");
-        logEntry.style.marginBottom = "5px";
-
-        if (type === "error") {
-          logEntry.style.color = "#c62828";
-          logEntry.innerHTML = `<strong>[${timestamp}] ❌</strong> ${message}`;
-        } else if (type === "success") {
-          logEntry.style.color = "#2e7d32";
-          logEntry.innerHTML = `<strong>[${timestamp}] ✅</strong> ${message}`;
-        } else {
-          logEntry.innerHTML = `<strong>[${timestamp}]</strong> ${message}`;
-        }
-
-        debugLog.appendChild(logEntry);
-        debugLog.scrollTop = debugLog.scrollHeight;
-        console.log(`[${timestamp}] ${message}`);
-      }
-
-      log("Page loaded", "success");
-      log(`API URL: ${API_URL}`);
-
-      uploadArea.addEventListener("click", () => {
-        log("Upload area clicked");
-        fileInput.click();
-      });
+      uploadArea.addEventListener("click", () => fileInput.click());
 
       uploadArea.addEventListener("dragover", (e) => {
         e.preventDefault();
-        log("File dragged over upload area");
-        uploadArea.style.background = "#fff5f0";
+        uploadArea.classList.add("drag-over");
       });
 
       uploadArea.addEventListener("dragleave", () => {
-        uploadArea.style.background = "";
+        uploadArea.classList.remove("drag-over");
       });
 
       uploadArea.addEventListener("drop", (e) => {
         e.preventDefault();
-        log("File dropped on upload area");
+        uploadArea.classList.remove("drag-over");
         const files = e.dataTransfer.files;
         if (files.length > 0) {
           handleFileSelect(files[0]);
@@ -228,130 +1030,200 @@
       });
 
       fileInput.addEventListener("change", (e) => {
-        log("File input changed");
         if (e.target.files.length > 0) {
           handleFileSelect(e.target.files[0]);
         }
       });
 
       uploadBtn.addEventListener("click", uploadImage);
+      cancelBtn.addEventListener("click", cancelUpload);
+      resetBtn.addEventListener("click", resetForm);
+      tryAgainBtn.addEventListener("click", resetForm);
+      copyBtn.addEventListener("click", copyToClipboard);
 
       function handleFileSelect(file) {
-        log(`File selected: ${file.name}`, "info");
-        log(`File size: ${file.size} bytes`);
-        log(`File type: ${file.type}`);
-
         if (!file.type.startsWith("image/")) {
-          log("Error: Not an image file!", "error");
+          showError("Please select a valid image file (PNG, JPG, GIF, etc.)");
+          return;
+        }
+
+        if (file.size > 10 * 1024 * 1024) {
+          showError("File size must be less than 10MB");
           return;
         }
 
         selectedFile = file;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          previewImage.src = e.target.result;
+          fileName.textContent = file.name;
+          uploadArea.style.display = "none";
+          previewContainer.style.display = "block";
+          errorContainer.style.display = "none";
+        };
+        reader.readAsDataURL(file);
+      }
 
-        document.getElementById("fileName").textContent = file.name;
-        document.getElementById("fileSize").textContent = file.size;
-        document.getElementById("fileType").textContent = file.type;
+      function cancelUpload() {
+        selectedFile = null;
+        fileInput.value = "";
+        previewContainer.style.display = "none";
+        uploadArea.style.display = "block";
+      }
 
-        fileInfo.style.display = "block";
-        uploadBtn.style.display = "block";
-
-        log(
-          `✅ File ready for upload: ${file.name} (${file.size} bytes)`,
-          "success",
-        );
+      function resetForm() {
+        selectedFile = null;
+        fileInput.value = "";
+        previewContainer.style.display = "none";
+        loadingContainer.style.display = "none";
+        successContainer.style.display = "none";
+        errorContainer.style.display = "none";
+        uploadArea.style.display = "block";
       }
 
       function uploadImage() {
-        if (!selectedFile) {
-          log("No file selected!", "error");
-          return;
-        }
-
-        log("=== STARTING UPLOAD ===");
-        log(`File: ${selectedFile.name}`);
-        log(`Size: ${selectedFile.size} bytes`);
+        if (!selectedFile) return;
 
         const formData = new FormData();
-
-        // Log what we're adding to FormData
-        log(`Adding file to FormData...`);
         formData.append("file", selectedFile);
 
-        // Log FormData contents
-        log(`FormData entries:`);
-        for (let pair of formData.entries()) {
-          const key = pair[0];
-          const value = pair[1];
-          if (value instanceof File) {
-            log(
-              `  - ${key}: File(name="${value.name}", size=${value.size}, type="${value.type}")`,
-            );
-          } else {
-            log(`  - ${key}: ${value}`);
-          }
-        }
-
-        document.getElementById("loading").style.display = "block";
-
-        log(`Sending POST request to: ${API_URL}`);
+        previewContainer.style.display = "none";
+        loadingContainer.style.display = "block";
+        errorContainer.style.display = "none";
+        successContainer.style.display = "none";
 
         fetch(API_URL, {
           method: "POST",
           body: formData,
-          // Don't set Content-Type header - browser will set it with boundary
         })
           .then((response) => {
-            log(`Response status: ${response.status}`);
-            log(`Response headers:`);
-            log(`  - Content-Type: ${response.headers.get("content-type")}`);
-            log(
-              `  - Access-Control-Allow-Origin: ${response.headers.get("access-control-allow-origin")}`,
-            );
-
             if (!response.ok) {
               return response.text().then((text) => {
-                log(`HTTP Error: ${response.status}`, "error");
-                log(`Response body: ${text}`, "error");
-                throw new Error(`HTTP ${response.status}`);
+                throw new Error(
+                  `HTTP ${response.status}: ${text || "Unknown error"}`,
+                );
               });
             }
-
             return response.json();
           })
           .then((data) => {
-            log("=== SUCCESS ===", "success");
-            log(`Response JSON:`, "success");
-            log(JSON.stringify(data, null, 2));
-
-            document.getElementById("response").innerHTML = `
-                        <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-top: 15px;">
-                            <h3>✅ Upload Successful!</h3>
-                            <p><strong>URL:</strong> <input type="text" value="${data.url || data.image_url || "NO URL"}" style="width: 100%; padding: 8px;" readonly></p>
-                            <p><strong>Filename:</strong> ${data.filename || data.file_name || "unknown"}</p>
-                            <p><strong>Size:</strong> ${data.file_size || "unknown"} bytes</p>
-                        </div>
-                    `;
+            // Handle different response formats
+            if (data.success || data.url) {
+              showSuccess(data);
+            } else if (data.error) {
+              showError(data.error);
+            } else {
+              showError("Upload failed - no URL in response");
+            }
           })
           .catch((error) => {
-            log("=== UPLOAD FAILED ===", "error");
-            log(`Error: ${error.message}`, "error");
-            log(`Stack: ${error.stack}`, "error");
+            let errorMsg = "Upload failed. Check the console and make sure:\n";
+            errorMsg +=
+              "1. Backend is running on https://page-api.triwize.com\n";
+            errorMsg += "2. CORS middleware is enabled\n";
+            errorMsg +=
+              "3. 'https://page-api.triwize.com' is in CORS_ORIGINS\n\n";
+            errorMsg += "Error: " + error.message;
 
-            document.getElementById("response").innerHTML = `
-                        <div style="background: #ffebee; padding: 15px; border-radius: 8px; margin-top: 15px; color: #c62828;">
-                            <h3>❌ Upload Failed</h3>
-                            <p>${error.message}</p>
-                            <p>Check browser console (F12) and the DEBUG LOG above for details</p>
-                        </div>
-                    `;
-          })
-          .finally(() => {
-            document.getElementById("loading").style.display = "none";
+            showError(errorMsg);
           });
       }
 
-      log("Event listeners attached", "success");
-      log("Ready to upload files!", "success");
+      function showSuccess(data) {
+        loadingContainer.style.display = "none";
+        successContainer.style.display = "block";
+        previewContainer.style.display = "none";
+        errorContainer.style.display = "none";
+
+        // Handle different response formats
+        const imageUrl = data.url || data.image_url || "";
+        const filename =
+          data.filename || data.file_name || selectedFile.name || "unknown";
+        const fileSize = data.file_size
+          ? (data.file_size / 1024).toFixed(2)
+          : (selectedFile.size / 1024).toFixed(2);
+
+        const urlInput = document.getElementById("urlInput");
+        const fileNameEl = document.getElementById("resultFileName");
+        const fileSizeEl = document.getElementById("resultFileSize");
+
+        urlInput.value = imageUrl;
+        fileNameEl.textContent = filename;
+        fileSizeEl.textContent = fileSize + " KB";
+
+        setTimeout(() => {
+          const urlBox = document.querySelector(".url-box");
+          if (urlBox) {
+            urlBox.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+        }, 300);
+      }
+
+      function showError(message) {
+        loadingContainer.style.display = "none";
+        errorContainer.style.display = "block";
+        previewContainer.style.display = "none";
+        uploadArea.style.display = "none";
+        document.getElementById("errorMessage").textContent = message;
+      }
+
+      function copyToClipboard() {
+        const urlInput = document.getElementById("urlInput");
+        const urlValue = urlInput.value;
+
+        if (!urlValue) {
+          return;
+        }
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard
+            .writeText(urlValue)
+            .then(() => {
+              showCopySuccess();
+            })
+            .catch(() => {
+              fallbackCopy(urlInput);
+            });
+        } else {
+          fallbackCopy(urlInput);
+        }
+      }
+
+      function fallbackCopy(element) {
+        element.select();
+        element.setSelectionRange(0, 99999);
+        document.execCommand("copy");
+        showCopySuccess();
+      }
+
+      function showCopySuccess() {
+        const originalHTML = copyBtn.innerHTML;
+        const originalTitle = copyBtn.title;
+
+        copyBtn.innerHTML = '<i class="fas fa-check"></i>';
+        copyBtn.classList.add("copied");
+        copyBtn.title = "Copied!";
+
+        showToast("✓ URL copied to clipboard!");
+
+        setTimeout(() => {
+          copyBtn.innerHTML = originalHTML;
+          copyBtn.classList.remove("copied");
+          copyBtn.title = originalTitle;
+        }, 2500);
+      }
+
+      function showToast(message) {
+        const toast = document.createElement("div");
+        toast.className = "copy-toast";
+        toast.textContent = message;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+          toast.style.animation = "toastSlideOut 0.3s ease-out";
+          setTimeout(() => toast.remove(), 300);
+        }, 2000);
+      }
     </script>
   </body>
 </html>
