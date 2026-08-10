@@ -3,1056 +3,360 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Triwize Image Upload</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
+    <title>Upload Image - Simple</title>
     <style>
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
       }
-
-      :root {
-        --spacing-xs: clamp(8px, 2vw, 12px);
-        --spacing-sm: clamp(12px, 3vw, 16px);
-        --spacing-md: clamp(16px, 4vw, 24px);
-        --spacing-lg: clamp(20px, 5vw, 32px);
-        --spacing-xl: clamp(24px, 6vw, 48px);
-
-        --font-size-xs: clamp(11px, 2vw, 13px);
-        --font-size-sm: clamp(13px, 2.5vw, 15px);
-        --font-size-base: clamp(14px, 3vw, 16px);
-        --font-size-lg: clamp(16px, 3.5vw, 18px);
-        --font-size-xl: clamp(20px, 4.5vw, 24px);
-        --font-size-2xl: clamp(26px, 7vw, 32px);
-        --font-size-3xl: clamp(32px, 8vw, 40px);
-
-        --border-radius-sm: clamp(10px, 2vw, 14px);
-        --border-radius-md: clamp(12px, 2.5vw, 18px);
-        --border-radius-lg: clamp(14px, 3vw, 28px);
-
-        --header-padding: clamp(1.5rem, 5vw, 3rem);
-        --content-padding: clamp(1.5rem, 4vw, 2.5rem);
-      }
-
       body {
-        font-family:
-          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          "Helvetica Neue", Arial, sans-serif;
-        background: linear-gradient(
-          180deg,
-          #87ceeb 0%,
-          #e0f6ff 50%,
-          #ff9054 100%
-        );
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         min-height: 100vh;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: var(--spacing-md);
-        position: relative;
-        overflow: hidden;
+        padding: 20px;
       }
-
-      body::before {
-        content: "";
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 60%;
-        background: linear-gradient(
-          to bottom,
-          #87ceeb 0%,
-          #b0e0e6 30%,
-          #e0f6ff 60%,
-          transparent 100%
-        );
-        z-index: 1;
-        pointer-events: none;
-      }
-
-      body::after {
-        content: "";
-        position: fixed;
-        bottom: 15%;
-        right: 10%;
-        width: clamp(200px, 40vw, 300px);
-        height: clamp(200px, 40vw, 300px);
-        background: radial-gradient(
-          circle,
-          rgba(255, 144, 84, 0.3) 0%,
-          transparent 70%
-        );
-        border-radius: 50%;
-        z-index: 1;
-        pointer-events: none;
-        filter: blur(40px);
-      }
-
       .container {
         background: white;
-        border-radius: var(--border-radius-lg);
-        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.25);
-        max-width: 700px;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        max-width: 500px;
         width: 100%;
-        overflow-x: hidden;
-        overflow-y: auto;
-        max-height: 90vh;
-        position: relative;
-        z-index: 10;
       }
-
-      .header {
-        background: linear-gradient(135deg, #ff9054 0%, #ff6b35 100%);
-        color: white;
-        padding: var(--header-padding);
+      h1 {
+        color: #333;
+        margin-bottom: 20px;
         text-align: center;
-        position: relative;
-        overflow: hidden;
       }
-
-      .header-decoration {
-        position: absolute;
-        top: -20px;
-        right: -30px;
-        font-size: clamp(80px, 25vw, 120px);
-        opacity: 0.1;
-        animation: float 6s ease-in-out infinite;
-      }
-
-      @keyframes float {
-        0%,
-        100% {
-          transform: translateY(0px) rotate(0deg);
-        }
-        50% {
-          transform: translateY(-20px) rotate(10deg);
-        }
-      }
-
-      .logo-section {
-        margin-bottom: var(--spacing-lg);
-        position: relative;
-        z-index: 2;
-        animation: slideDown 0.6s ease-out;
-      }
-
-      @keyframes slideDown {
-        from {
-          transform: translateY(-20px);
-          opacity: 0;
-        }
-        to {
-          transform: translateY(0);
-          opacity: 1;
-        }
-      }
-
-      .logo {
-        width: clamp(50px, 12vw, 70px);
-        height: clamp(50px, 12vw, 70px);
-        background: white;
-        border-radius: var(--border-radius-sm);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto var(--spacing-md);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-        font-size: clamp(24px, 6vw, 32px);
-        font-weight: 800;
-        background: linear-gradient(135deg, #ff9054 0%, #ff6b35 100%);
-        color: white;
-        border: 3px solid white;
-        animation: rotate 4s ease-in-out infinite;
-      }
-
-      @keyframes rotate {
-        0%,
-        100% {
-          transform: rotate(0deg) scale(1);
-        }
-        50% {
-          transform: rotate(5deg) scale(1.05);
-        }
-      }
-
-      .header h1 {
-        font-size: var(--font-size-3xl);
-        margin-bottom: var(--spacing-xs);
-        font-weight: 800;
-        letter-spacing: -1px;
-        position: relative;
-        z-index: 2;
-        line-height: 1.2;
-      }
-
-      .header p {
-        font-size: var(--font-size-sm);
-        opacity: 0.95;
-        margin: 0;
-        position: relative;
-        z-index: 2;
-      }
-
-      .brand-name {
-        font-size: var(--font-size-xs);
-        opacity: 0.9;
-        margin-top: var(--spacing-md);
-        font-weight: 600;
-        letter-spacing: 1.2px;
-        text-transform: uppercase;
-        position: relative;
-        z-index: 2;
-      }
-
-      .content {
-        padding: var(--content-padding);
-      }
-
-      .upload-area {
-        border: clamp(2px, 0.5vw, 2.5px) dashed #ff9054;
-        border-radius: var(--border-radius-md);
-        padding: clamp(1.5rem, 5vw, 3rem) clamp(1rem, 3vw, 2rem);
+      .upload-box {
+        border: 2px dashed #667eea;
+        padding: 30px;
+        border-radius: 8px;
         text-align: center;
         cursor: pointer;
-        transition: all 0.3s ease;
-        background: linear-gradient(
-          135deg,
-          rgba(255, 144, 84, 0.08) 0%,
-          rgba(255, 107, 53, 0.08) 100%
-        );
-        position: relative;
-        overflow: hidden;
+        transition: all 0.3s;
+        margin: 20px 0;
       }
-
-      .upload-area:hover {
-        border-color: #ff6b35;
-        background: linear-gradient(
-          135deg,
-          rgba(255, 144, 84, 0.15) 0%,
-          rgba(255, 107, 53, 0.15) 100%
-        );
-        transform: translateY(-5px);
-        box-shadow: 0 12px 35px rgba(255, 107, 53, 0.25);
+      .upload-box:hover {
+        background: #f0f0f0;
+        border-color: #764ba2;
       }
-
-      .upload-area.drag-over {
-        border-color: #ff5722;
-        background: linear-gradient(
-          135deg,
-          rgba(255, 144, 84, 0.2) 0%,
-          rgba(255, 107, 53, 0.2) 100%
-        );
-        transform: scale(1.03);
-        box-shadow: 0 15px 40px rgba(255, 107, 53, 0.3);
+      .upload-box.drag-over {
+        background: #e8e8ff;
+        border-color: #764ba2;
       }
-
-      .upload-content {
-        position: relative;
-        z-index: 1;
-      }
-
-      .upload-icon-wrapper {
-        position: relative;
-        margin-bottom: var(--spacing-md);
-        display: inline-block;
-      }
-
-      .upload-icon {
-        font-size: clamp(40px, 10vw, 56px);
-        background: linear-gradient(135deg, #ff9054 0%, #ff6b35 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        display: block;
-        animation: floatAnimation 3s ease-in-out infinite;
-      }
-
-      .upload-icon::before {
-        content: "";
-        position: absolute;
-        width: clamp(60px, 15vw, 80px);
-        height: clamp(60px, 15vw, 80px);
-        border: 2px solid rgba(255, 144, 84, 0.1);
-        border-radius: 50%;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        animation: pulse 2s ease-in-out infinite;
-      }
-
-      @keyframes floatAnimation {
-        0%,
-        100% {
-          transform: translateY(0px);
-        }
-        50% {
-          transform: translateY(-16px);
-        }
-      }
-
-      @keyframes pulse {
-        0%,
-        100% {
-          transform: translate(-50%, -50%) scale(1);
-          opacity: 1;
-        }
-        100% {
-          transform: translate(-50%, -50%) scale(1.3);
-          opacity: 0;
-        }
-      }
-
-      .upload-text h3 {
-        font-size: var(--font-size-lg);
-        color: #202124;
-        margin-bottom: var(--spacing-xs);
-        font-weight: 700;
-      }
-
-      .upload-text p {
-        font-size: var(--font-size-sm);
-        color: #5f6368;
-        margin: 0;
-        line-height: 1.5;
-      }
-
       input[type="file"] {
         display: none;
       }
-
-      .preview-container {
-        display: none;
-        animation: fadeIn 0.4s ease-out;
-      }
-
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(10px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      .preview-image {
-        width: 100%;
-        max-height: clamp(200px, 60vw, 300px);
-        object-fit: cover;
-        border-radius: var(--border-radius-md);
-        margin-bottom: var(--spacing-lg);
-        border: 2px solid #ff9054;
-        box-shadow: 0 8px 25px rgba(255, 107, 53, 0.2);
-      }
-
-      .file-name {
-        font-size: var(--font-size-sm);
-        color: #5f6368;
-        margin-bottom: var(--spacing-lg);
-        text-align: center;
-        word-break: break-all;
-        font-weight: 600;
-      }
-
-      .button-group {
-        display: flex;
-        gap: var(--spacing-md);
-        margin-top: var(--spacing-lg);
-        flex-wrap: wrap;
-      }
-
-      .btn {
-        flex: 1;
-        min-width: clamp(120px, 100%, 200px);
-        padding: clamp(10px, 2vw, 14px) clamp(12px, 3vw, 18px);
+      button {
+        background: #667eea;
+        color: white;
         border: none;
-        border-radius: var(--border-radius-sm);
-        font-size: var(--font-size-sm);
-        font-weight: 700;
+        padding: 12px 30px;
+        border-radius: 5px;
         cursor: pointer;
-        transition: all 0.3s ease;
+        font-size: 16px;
+        margin: 10px 5px;
+        transition: all 0.3s;
       }
-
-      .btn-primary {
-        background: linear-gradient(135deg, #ff9054 0%, #ff6b35 100%);
-        color: white;
-        box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+      button:hover {
+        background: #764ba2;
       }
-
-      .btn-primary:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 10px 30px rgba(255, 107, 53, 0.5);
+      button:disabled {
+        background: #ccc;
+        cursor: not-allowed;
       }
-
-      .btn-primary:active {
-        transform: translateY(-2px);
-      }
-
-      .btn-secondary {
-        background: #f0f0f0;
-        color: #202124;
-        border: 1.5px solid #e8eaed;
-      }
-
-      .btn-secondary:hover {
-        background: #e8e8e8;
-        border-color: #ff9054;
-      }
-
-      .loading-container {
-        display: none;
-        text-align: center;
-        padding: clamp(2rem, 5vw, 3rem) 0;
-      }
-
-      .spinner {
-        width: clamp(40px, 10vw, 56px);
-        height: clamp(40px, 10vw, 56px);
-        border: 4px solid #f0f0f0;
-        border-top-color: #ff9054;
-        border-right-color: #ff6b35;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        margin: 0 auto var(--spacing-lg);
-      }
-
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
-
-      .loading-text {
-        color: #5f6368;
-        font-size: var(--font-size-base);
-        font-weight: 600;
-      }
-
-      .success-container {
-        display: none;
-        animation: slideUp 0.5s ease-out;
-        scroll-margin-top: var(--spacing-lg);
-      }
-
-      @keyframes slideUp {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      .alert {
-        padding: clamp(1rem, 3vw, 1.5rem);
-        border-radius: var(--border-radius-md);
-        margin-bottom: var(--spacing-lg);
-        display: flex;
-        gap: var(--spacing-md);
-      }
-
-      .alert-success {
-        background: linear-gradient(
-          135deg,
-          rgba(52, 168, 83, 0.12) 0%,
-          rgba(30, 132, 73, 0.12) 100%
-        );
-        border: 1.5px solid rgba(52, 168, 83, 0.3);
-        color: #137333;
-      }
-
-      .alert-error {
-        background: linear-gradient(
-          135deg,
-          rgba(217, 48, 37, 0.12) 0%,
-          rgba(179, 33, 30, 0.12) 100%
-        );
-        border: 1.5px solid rgba(217, 48, 37, 0.3);
-        color: #d93025;
-      }
-
-      .alert-icon {
-        font-size: clamp(18px, 4vw, 22px);
-        flex-shrink: 0;
-        margin-top: 2px;
-      }
-
-      .alert-content h4 {
-        margin: 0 0 4px;
-        font-size: var(--font-size-lg);
-        font-weight: 700;
-      }
-
-      .alert-content p {
-        margin: 0;
-        font-size: var(--font-size-xs);
-        opacity: 0.9;
-        line-height: 1.5;
-      }
-
-      .error-container {
-        display: none;
-      }
-
-      .url-box {
-        background: linear-gradient(
-          135deg,
-          rgba(255, 144, 84, 0.08) 0%,
-          rgba(255, 107, 53, 0.08) 100%
-        );
-        border: 1.5px solid rgba(255, 144, 84, 0.3);
-        border-radius: var(--border-radius-md);
-        padding: var(--spacing-lg);
-        margin-bottom: var(--spacing-lg);
-        scroll-margin-top: var(--spacing-lg);
-      }
-
-      .url-label {
-        font-size: var(--font-size-xs);
-        color: #5f6368;
-        text-transform: uppercase;
-        letter-spacing: 0.6px;
-        margin-bottom: var(--spacing-md);
-        display: block;
-        font-weight: 700;
-      }
-
-      .url-input-group {
-        display: flex;
-        gap: var(--spacing-sm);
-        flex-wrap: wrap;
-      }
-
-      .url-input {
-        flex: 1;
-        min-width: clamp(150px, 100%, 300px);
-        padding: clamp(10px, 2.5vw, 14px) clamp(12px, 2.5vw, 16px);
-        border: 1.5px solid #e8eaed;
-        border-radius: var(--border-radius-sm);
-        font-family: "Monaco", "Courier New", monospace;
-        font-size: clamp(12px, 2.5vw, 13px);
-        color: #202124;
-        background: white;
-        font-weight: 500;
-        overflow-x: auto;
-        word-break: break-all;
-        line-height: 1.6;
-        transition: all 0.3s ease;
-      }
-
-      .url-input:focus {
-        outline: none;
-        border-color: #ff9054;
-        box-shadow: 0 0 0 3px rgba(255, 144, 84, 0.15);
-      }
-
-      .copy-btn {
-        padding: clamp(10px, 2.5vw, 14px) clamp(14px, 3vw, 18px);
-        background: white;
-        border: 1.5px solid #e8eaed;
-        border-radius: var(--border-radius-sm);
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-size: var(--font-size-sm);
-        color: #5f6368;
-        font-weight: 600;
-        min-width: 48px;
-        min-height: 48px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-      }
-
-      .copy-btn:hover {
-        background: linear-gradient(135deg, #ff9054 0%, #ff6b35 100%);
-        color: white;
-        border: 1.5px solid transparent;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
-      }
-
-      .copy-btn.copied {
-        background: linear-gradient(135deg, #34a853 0%, #1e8449 100%);
-        color: white;
-        border: 1.5px solid transparent;
-        box-shadow: 0 4px 12px rgba(52, 168, 83, 0.3);
-      }
-
-      .copy-toast {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: linear-gradient(135deg, #34a853 0%, #1e8449 100%);
-        color: white;
-        padding: 12px 20px;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(52, 168, 83, 0.3);
-        animation: toastSlideIn 0.3s ease-out;
-        z-index: 1000;
+      .info {
+        background: #f5f5f5;
+        padding: 15px;
+        border-radius: 5px;
+        margin: 15px 0;
         font-size: 14px;
-        font-weight: 600;
+        line-height: 1.6;
       }
-
-      @keyframes toastSlideIn {
-        from {
-          transform: translateX(400px);
-          opacity: 0;
-        }
-        to {
-          transform: translateX(0);
-          opacity: 1;
-        }
+      .success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
       }
-
-      @media (max-width: 639px) {
-        .button-group {
-          flex-direction: column;
-        }
-
-        .btn {
-          min-width: 100%;
-        }
-
-        .url-input-group {
-          flex-direction: column;
-        }
-
-        .url-input {
-          min-width: 100%;
-        }
-
-        .copy-btn {
-          width: 100%;
-        }
-
-        .copy-toast {
-          left: 20px;
-          right: 20px;
-        }
+      .error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
       }
-
-      @media (prefers-color-scheme: dark) {
-        .container {
-          background: #1e1e1e;
-          box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
-        }
-
-        .upload-area {
-          border-color: #ff9054;
-          background: linear-gradient(
-            135deg,
-            rgba(255, 144, 84, 0.1) 0%,
-            rgba(255, 107, 53, 0.1) 100%
-          );
-        }
-
-        .upload-text h3 {
-          color: #e0e0e0;
-        }
-
-        .upload-text p {
-          color: #b0b0b0;
-        }
-
-        .file-name {
-          color: #b0b0b0;
-        }
-
-        .url-input {
-          background: #2a2a2a;
-          color: #e0e0e0;
-          border-color: #444;
-        }
-
-        .url-input:focus {
-          border-color: #ff9054;
-        }
-
-        .btn-secondary {
-          background: #2a2a2a;
-          color: #e0e0e0;
-          border-color: #444;
-        }
-
-        .btn-secondary:hover {
-          background: #333;
-          border-color: #ff9054;
-        }
+      .warning {
+        background: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeeba;
+      }
+      .url-box {
+        background: #e8f4f8;
+        padding: 15px;
+        border-radius: 5px;
+        margin: 15px 0;
+        word-break: break-all;
+        font-family: monospace;
+        font-size: 12px;
+      }
+      .copy-btn {
+        background: #28a745;
+        padding: 8px 15px;
+        font-size: 14px;
+      }
+      .copy-btn:hover {
+        background: #218838;
       }
     </style>
   </head>
   <body>
     <div class="container">
-      <div class="header">
-        <div class="header-decoration">✈️</div>
+      <h1>📤 Upload Image to S3</h1>
 
-        <div class="logo-section">
-          <div class="logo">T</div>
-        </div>
-        <h1>Upload Image</h1>
-        <p>Jet-Set Your Files to S3</p>
-        <div class="brand-name">✈ Powered by Triwize</div>
+      <div class="upload-box" id="uploadBox">
+        <p>Click to upload or drag file here</p>
+        <input type="file" id="fileInput" accept="image/*" />
       </div>
 
-      <div class="content">
-        <div id="uploadArea" class="upload-area">
-          <input type="file" id="fileInput" accept="image/*" />
-          <div class="upload-content">
-            <div class="upload-icon-wrapper">
-              <i class="fas fa-cloud-upload-alt upload-icon"></i>
-            </div>
-            <div class="upload-text">
-              <h3>Upload Image</h3>
-              <p>Drag your image to take flight, or click to upload</p>
-            </div>
-          </div>
-        </div>
+      <div id="fileInfo" class="info" style="display: none">
+        <strong>Selected File:</strong><br />
+        Name: <span id="fileName"></span><br />
+        Size: <span id="fileSize"></span> bytes
+      </div>
 
-        <div id="previewContainer" class="preview-container">
-          <img id="previewImage" class="preview-image" alt="Preview" />
-          <p id="fileName" class="file-name"></p>
-          <div class="button-group">
-            <button id="uploadBtn" class="btn btn-primary">
-              <i class="fas fa-upload"></i> Launch to S3 🚀
-            </button>
-            <button id="cancelBtn" class="btn btn-secondary">Clear</button>
-          </div>
-        </div>
+      <button id="uploadBtn" disabled>Upload File</button>
+      <button id="clearBtn">Clear</button>
 
-        <div id="loadingContainer" class="loading-container">
-          <div class="spinner"></div>
-          <p class="loading-text">Taking off... Uploading your image ✈️</p>
-        </div>
+      <div id="status" class="info" style="display: none"></div>
 
-        <div id="successContainer" class="success-container">
-          <div class="alert alert-success">
-            <i class="fas fa-check-circle alert-icon"></i>
-            <div class="alert-content">
-              <h4>Upload Successful! 🛬</h4>
-              <p>Your image has been uploaded to S3</p>
-            </div>
-          </div>
+      <div id="urlBox" class="url-box" style="display: none">
+        <strong>✅ Upload Successful!</strong><br />
+        URL: <span id="urlText"></span><br />
+        <button class="copy-btn" onclick="copyUrl()">Copy URL</button>
+      </div>
 
-          <div class="url-box">
-            <label class="url-label">📋 Image URL</label>
-            <div class="url-input-group">
-              <input
-                type="text"
-                id="urlInput"
-                class="url-input"
-                readonly
-                placeholder="URL will appear here..."
-              />
-              <button
-                id="copyBtn"
-                class="copy-btn"
-                title="Copy URL to clipboard"
-              >
-                <i class="fas fa-copy"></i>
-              </button>
-            </div>
-          </div>
-
-          <button
-            id="resetBtn"
-            class="btn btn-primary"
-            style="width: 100%; margin-top: var(--spacing-lg)"
-          >
-            <i class="fas fa-redo"></i> Upload Another ✈️
-          </button>
-        </div>
-
-        <div id="errorContainer" class="error-container">
-          <div class="alert alert-error">
-            <i class="fas fa-exclamation-circle alert-icon"></i>
-            <div class="alert-content">
-              <h4>Upload Failed ✈️</h4>
-              <p id="errorMessage"></p>
-            </div>
-          </div>
-          <button id="tryAgainBtn" class="btn btn-primary" style="width: 100%">
-            <i class="fas fa-redo"></i> Try Again
-          </button>
-        </div>
+      <div
+        id="debugLog"
+        class="info"
+        style="background: #f0f0f0; max-height: 300px; overflow-y: auto"
+      >
+        <strong>📋 Debug Log:</strong><br />
+        <div id="logContent"></div>
       </div>
     </div>
 
     <script>
-      // ✅ API URL
       const API_URL =
         "https://page-api.triwize.com/api/v1/upload_image_to_get_url";
-
-      const fileInput = document.getElementById("fileInput");
-      const uploadArea = document.getElementById("uploadArea");
-      const previewContainer = document.getElementById("previewContainer");
-      const previewImage = document.getElementById("previewImage");
-      const fileName = document.getElementById("fileName");
-      const uploadBtn = document.getElementById("uploadBtn");
-      const cancelBtn = document.getElementById("cancelBtn");
-      const loadingContainer = document.getElementById("loadingContainer");
-      const successContainer = document.getElementById("successContainer");
-      const errorContainer = document.getElementById("errorContainer");
-      const resetBtn = document.getElementById("resetBtn");
-      const tryAgainBtn = document.getElementById("tryAgainBtn");
-      const copyBtn = document.getElementById("copyBtn");
-      const urlInput = document.getElementById("urlInput");
-
       let selectedFile = null;
 
-      uploadArea.addEventListener("click", () => fileInput.click());
+      // Debug logging
+      function log(message, type = "info") {
+        const timestamp = new Date().toLocaleTimeString();
+        const logContent = document.getElementById("logContent");
+        const logEntry = document.createElement("div");
+        let prefix = "ℹ️";
+        if (type === "error") prefix = "❌";
+        if (type === "success") prefix = "✅";
+        if (type === "warning") prefix = "⚠️";
 
-      uploadArea.addEventListener("dragover", (e) => {
-        e.preventDefault();
-        uploadArea.classList.add("drag-over");
+        logEntry.textContent = `[${timestamp}] ${prefix} ${message}`;
+        logEntry.style.marginBottom = "5px";
+        if (type === "error") logEntry.style.color = "red";
+        if (type === "success") logEntry.style.color = "green";
+        if (type === "warning") logEntry.style.color = "orange";
+
+        logContent.appendChild(logEntry);
+        logContent.parentElement.scrollTop =
+          logContent.parentElement.scrollHeight;
+        console.log(`[${type.toUpperCase()}]`, message);
+      }
+
+      log("Page loaded", "success");
+      log(`API URL: ${API_URL}`, "info");
+
+      const uploadBox = document.getElementById("uploadBox");
+      const fileInput = document.getElementById("fileInput");
+      const uploadBtn = document.getElementById("uploadBtn");
+      const clearBtn = document.getElementById("clearBtn");
+
+      // Upload box click
+      uploadBox.addEventListener("click", () => {
+        log("Upload box clicked");
+        fileInput.click();
       });
 
-      uploadArea.addEventListener("dragleave", () => {
-        uploadArea.classList.remove("drag-over");
+      // Drag and drop
+      uploadBox.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        uploadBox.classList.add("drag-over");
+        log("File dragged over");
       });
 
-      uploadArea.addEventListener("drop", (e) => {
+      uploadBox.addEventListener("dragleave", () => {
+        uploadBox.classList.remove("drag-over");
+      });
+
+      uploadBox.addEventListener("drop", (e) => {
         e.preventDefault();
-        uploadArea.classList.remove("drag-over");
+        uploadBox.classList.remove("drag-over");
         const files = e.dataTransfer.files;
         if (files.length > 0) {
+          log("File dropped");
           handleFileSelect(files[0]);
         }
       });
 
+      // File input change
       fileInput.addEventListener("change", (e) => {
+        log("File input changed");
         if (e.target.files.length > 0) {
           handleFileSelect(e.target.files[0]);
         }
       });
 
-      uploadBtn.addEventListener("click", uploadImage);
-      cancelBtn.addEventListener("click", cancelUpload);
-      resetBtn.addEventListener("click", resetForm);
-      tryAgainBtn.addEventListener("click", resetForm);
-      copyBtn.addEventListener("click", copyToClipboard);
-
+      // Handle file selection
       function handleFileSelect(file) {
-        console.log("File selected:", file.name, "Size:", file.size);
-
-        if (!file.type.startsWith("image/")) {
-          showError("Please select a valid image file");
-          return;
-        }
+        log(`File selected: ${file.name}`, "info");
+        log(`File size: ${file.size} bytes`, "info");
+        log(`File type: ${file.type}`, "info");
 
         if (file.size === 0) {
-          showError("File is empty. Please select a valid image file.");
+          log("ERROR: File is empty!", "error");
+          showStatus("File is empty!", "error");
           return;
         }
 
-        if (file.size > 50 * 1024 * 1024) {
-          showError("File size must be less than 50MB");
+        if (!file.type.startsWith("image/")) {
+          log("ERROR: Not an image file!", "error");
+          showStatus("Please select an image file!", "error");
           return;
         }
 
         selectedFile = file;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          previewImage.src = e.target.result;
-          fileName.textContent = file.name;
-          uploadArea.style.display = "none";
-          previewContainer.style.display = "block";
-          errorContainer.style.display = "none";
-        };
-        reader.readAsDataURL(file);
+        document.getElementById("fileName").textContent = file.name;
+        document.getElementById("fileSize").textContent = file.size;
+        document.getElementById("fileInfo").style.display = "block";
+        uploadBtn.disabled = false;
+
+        log("File ready for upload", "success");
       }
 
-      function cancelUpload() {
-        selectedFile = null;
-        fileInput.value = "";
-        previewContainer.style.display = "none";
-        uploadArea.style.display = "block";
-      }
-
-      function resetForm() {
-        selectedFile = null;
-        fileInput.value = "";
-        previewContainer.style.display = "none";
-        loadingContainer.style.display = "none";
-        successContainer.style.display = "none";
-        errorContainer.style.display = "none";
-        uploadArea.style.display = "block";
-      }
-
-      function uploadImage() {
+      // Upload function
+      uploadBtn.addEventListener("click", async () => {
         if (!selectedFile) {
-          showError("No file selected");
+          log("No file selected!", "error");
           return;
         }
 
-        // Check file size again before upload
-        if (selectedFile.size === 0) {
-          showError("File is empty. Please select a valid image.");
-          return;
-        }
+        log("=== STARTING UPLOAD ===", "info");
+        log(`File: ${selectedFile.name}`, "info");
+        log(`Size: ${selectedFile.size} bytes`, "info");
 
-        console.log(
-          "Starting upload:",
-          selectedFile.name,
-          selectedFile.size,
-          "bytes",
-        );
-
+        // Create FormData
         const formData = new FormData();
         formData.append("file", selectedFile);
 
-        previewContainer.style.display = "none";
-        loadingContainer.style.display = "block";
-        errorContainer.style.display = "none";
-        successContainer.style.display = "none";
+        log("FormData created", "success");
+        log("Making fetch request...", "info");
 
-        fetch(API_URL, {
-          method: "POST",
-          body: formData,
-        })
-          .then((response) => {
-            console.log("Response status:", response.status);
+        uploadBtn.disabled = true;
+        showStatus("Uploading...", "warning");
 
-            if (!response.ok) {
-              return response.text().then((text) => {
-                console.error("Error response:", text);
-                throw new Error(
-                  `HTTP ${response.status}: ${text || "Unknown error"}`,
-                );
-              });
-            }
-            return response.json();
-          })
-          .then((data) => {
-            console.log("Full response data:", data);
+        try {
+          log(`Fetching: ${API_URL}`, "info");
 
-            // Check if success field exists and is true
-            if (!data.success) {
-              showError(
-                "Backend returned success=false. Message: " +
-                  (data.message || "Unknown error"),
-              );
-              return;
-            }
-
-            // Extract URL from response
-            const imageUrl = data.url || data.image_url;
-
-            if (!imageUrl) {
-              console.error("No URL in response:", data);
-              showError(
-                "Upload completed but no URL returned. Response: " +
-                  JSON.stringify(data),
-              );
-              return;
-            }
-
-            console.log("Upload successful! URL:", imageUrl);
-            showSuccess(imageUrl);
-          })
-          .catch((error) => {
-            console.error("Upload error:", error);
-            showError(
-              error.message ||
-                "Upload failed. Check browser console for details.",
-            );
+          const response = await fetch(API_URL, {
+            method: "POST",
+            body: formData,
           });
-      }
 
-      function showSuccess(imageUrl) {
-        loadingContainer.style.display = "none";
-        successContainer.style.display = "block";
-        previewContainer.style.display = "none";
-        errorContainer.style.display = "none";
+          log(`Response status: ${response.status}`, "info");
+          log(`Response type: ${response.headers.get("content-type")}`, "info");
 
-        // Set the URL in the input field
-        urlInput.value = imageUrl;
-
-        // Scroll to URL box
-        setTimeout(() => {
-          const urlBox = document.querySelector(".url-box");
-          if (urlBox) {
-            urlBox.scrollIntoView({ behavior: "smooth", block: "center" });
+          if (!response.ok) {
+            const text = await response.text();
+            log(`Error response: ${text}`, "error");
+            showStatus(`Error: HTTP ${response.status}`, "error");
+            uploadBtn.disabled = false;
+            return;
           }
-        }, 300);
-      }
 
-      function showError(message) {
-        console.error("Showing error:", message);
-        loadingContainer.style.display = "none";
-        errorContainer.style.display = "block";
-        previewContainer.style.display = "none";
-        uploadArea.style.display = "none";
-        document.getElementById("errorMessage").textContent = message;
-      }
+          const data = await response.json();
+          log("Response JSON received", "success");
+          log(`Response: ${JSON.stringify(data)}`, "success");
 
-      function copyToClipboard() {
-        const urlValue = urlInput.value;
-
-        if (!urlValue) {
-          return;
+          if (data.success && data.url) {
+            log(`Upload successful! URL: ${data.url}`, "success");
+            showUrl(data.url);
+            showStatus("Upload successful! ✅", "success");
+          } else if (data.url) {
+            log(`Upload successful! URL: ${data.url}`, "success");
+            showUrl(data.url);
+            showStatus("Upload successful! ✅", "success");
+          } else {
+            log(`No URL in response: ${JSON.stringify(data)}`, "error");
+            showStatus("Upload failed: No URL returned", "error");
+            uploadBtn.disabled = false;
+          }
+        } catch (error) {
+          log(`Fetch error: ${error.message}`, "error");
+          log(`Stack: ${error.stack}`, "error");
+          showStatus(`Error: ${error.message}`, "error");
+          uploadBtn.disabled = false;
         }
+      });
 
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard
-            .writeText(urlValue)
-            .then(() => {
-              showCopySuccess();
-            })
-            .catch(() => {
-              fallbackCopy();
-            });
+      // Clear button
+      clearBtn.addEventListener("click", () => {
+        selectedFile = null;
+        fileInput.value = "";
+        document.getElementById("fileInfo").style.display = "none";
+        document.getElementById("status").style.display = "none";
+        document.getElementById("urlBox").style.display = "none";
+        uploadBtn.disabled = true;
+        log("Form cleared", "info");
+      });
+
+      // Show status message
+      function showStatus(message, type = "info") {
+        const statusDiv = document.getElementById("status");
+        statusDiv.textContent = message;
+        statusDiv.className = `info ${type}`;
+        statusDiv.style.display = "block";
+      }
+
+      // Show URL result
+      function showUrl(url) {
+        document.getElementById("urlText").textContent = url;
+        document.getElementById("urlBox").style.display = "block";
+      }
+
+      // Copy URL to clipboard
+      function copyUrl() {
+        const url = document.getElementById("urlText").textContent;
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(url).then(() => {
+            log("URL copied to clipboard", "success");
+            alert("URL copied!");
+          });
         } else {
-          fallbackCopy();
+          // Fallback
+          const textarea = document.createElement("textarea");
+          textarea.value = url;
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand("copy");
+          document.body.removeChild(textarea);
+          log("URL copied to clipboard (fallback)", "success");
+          alert("URL copied!");
         }
       }
 
-      function fallbackCopy() {
-        urlInput.select();
-        urlInput.setSelectionRange(0, 99999);
-        document.execCommand("copy");
-        showCopySuccess();
-      }
-
-      function showCopySuccess() {
-        const originalHTML = copyBtn.innerHTML;
-        const originalTitle = copyBtn.title;
-
-        copyBtn.innerHTML = '<i class="fas fa-check"></i>';
-        copyBtn.classList.add("copied");
-        copyBtn.title = "Copied!";
-
-        showToast("✓ URL copied to clipboard!");
-
-        setTimeout(() => {
-          copyBtn.innerHTML = originalHTML;
-          copyBtn.classList.remove("copied");
-          copyBtn.title = originalTitle;
-        }, 2500);
-      }
-
-      function showToast(message) {
-        const toast = document.createElement("div");
-        toast.className = "copy-toast";
-        toast.textContent = message;
-        document.body.appendChild(toast);
-
-        setTimeout(() => {
-          toast.style.animation = "none";
-          setTimeout(() => toast.remove(), 300);
-        }, 2000);
-      }
-
-      // Log on page load
-      console.log("Page loaded. API URL:", API_URL);
+      log("Ready to upload", "success");
     </script>
   </body>
 </html>
