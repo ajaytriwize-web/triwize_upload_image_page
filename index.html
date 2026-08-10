@@ -776,6 +776,19 @@
         }
       }
 
+      .debug-info {
+        background: #f5f5f5;
+        padding: 10px;
+        border-radius: 8px;
+        margin: 10px 0;
+        font-size: 12px;
+        display: none;
+      }
+
+      .debug-info.show {
+        display: block;
+      }
+
       @media (max-width: 639px) {
         .button-group {
           flex-direction: column;
@@ -839,6 +852,10 @@
         .btn-secondary:hover {
           background: #333;
           border-color: #ff9054;
+        }
+        .debug-info {
+          background: #2a2a2a;
+          color: #e0e0e0;
         }
       }
 
@@ -973,8 +990,8 @@
     </div>
 
     <script>
-      const API_URL =
-        "https://page-api.triwize.com/api/v1/upload_image_to_get_url";
+      // ✅ API URL - Change this based on your environment
+      const API_URL = "http://localhost:8000/api/v1/upload_image_to_get_url";
 
       const fileInput = document.getElementById("fileInput");
       const uploadArea = document.getElementById("uploadArea");
@@ -991,6 +1008,13 @@
       const copyBtn = document.getElementById("copyBtn");
 
       let selectedFile = null;
+
+      // Log API URL on page load
+      console.log("✅ API URL configured:", API_URL);
+      console.log("🔍 If upload fails, make sure:");
+      console.log("   1. FastAPI backend is running on port 8000");
+      console.log("   2. CORS middleware is enabled in main.py");
+      console.log("   3. Backend has 'http://localhost:8000' in CORS_ORIGINS");
 
       uploadArea.addEventListener("click", () => fileInput.click());
 
@@ -1075,33 +1099,58 @@
         errorContainer.style.display = "none";
         successContainer.style.display = "none";
 
+        console.log("📤 Starting upload...");
+        console.log("📋 File:", selectedFile.name);
+        console.log(
+          "📦 File size:",
+          (selectedFile.size / 1024).toFixed(2),
+          "KB",
+        );
+        console.log("🌐 API URL:", API_URL);
+
         fetch(API_URL, {
           method: "POST",
           body: formData,
+          // ✅ DON'T set Content-Type! Browser will set it with correct boundary
         })
           .then((response) => {
+            console.log("📥 Response received");
+            console.log("Status:", response.status);
+            console.log("Content-Type:", response.headers.get("content-type"));
+
             if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
+              return response.text().then((text) => {
+                console.error("❌ HTTP Error:", response.status, text);
+                throw new Error(
+                  `HTTP ${response.status}: ${text || "Unknown error"}`,
+                );
+              });
             }
             return response.json();
           })
           .then((data) => {
-            console.log("API Response:", data);
+            console.log("✅ API Response:", data);
 
-            if (data.success && data.url) {
+            // Handle different response formats
+            if (data.success || data.url) {
               showSuccess(data);
-            } else if (data.url) {
-              showSuccess(data);
+            } else if (data.error) {
+              showError(data.error);
             } else {
-              showError(data.message || "Upload failed - no URL in response");
+              showError("Upload failed - no URL in response");
             }
           })
           .catch((error) => {
-            console.error("Upload error:", error);
-            showError(
-              "Network error. Make sure the API server is running and accessible at: " +
-                API_URL,
-            );
+            console.error("❌ Upload error:", error);
+            console.error("Error details:", error.message);
+
+            let errorMsg = "Upload failed. Check the console and make sure:\n";
+            errorMsg += "1. Backend is running on http://localhost:8000\n";
+            errorMsg += "2. CORS middleware is enabled\n";
+            errorMsg += "3. 'http://localhost:8000' is in CORS_ORIGINS\n\n";
+            errorMsg += "Error: " + error.message;
+
+            showError(errorMsg);
           });
       }
 
@@ -1111,12 +1160,13 @@
         previewContainer.style.display = "none";
         errorContainer.style.display = "none";
 
+        // Handle different response formats
         const imageUrl = data.url || data.image_url || "";
         const filename =
           data.filename || data.file_name || selectedFile.name || "unknown";
         const fileSize = data.file_size
           ? (data.file_size / 1024).toFixed(2)
-          : "0";
+          : (selectedFile.size / 1024).toFixed(2);
 
         const urlInput = document.getElementById("urlInput");
         const fileNameEl = document.getElementById("resultFileName");
@@ -1126,9 +1176,10 @@
         fileNameEl.textContent = filename;
         fileSizeEl.textContent = fileSize + " KB";
 
-        console.log("URL set to:", imageUrl);
-        console.log("Filename:", filename);
-        console.log("Size:", fileSize);
+        console.log("✅ Upload successful!");
+        console.log("🔗 URL:", imageUrl);
+        console.log("📁 Filename:", filename);
+        console.log("💾 Size:", fileSize, "KB");
 
         setTimeout(() => {
           const urlBox = document.querySelector(".url-box");
@@ -1144,6 +1195,7 @@
         previewContainer.style.display = "none";
         uploadArea.style.display = "none";
         document.getElementById("errorMessage").textContent = message;
+        console.error("🚨 Error displayed to user:", message);
       }
 
       function copyToClipboard() {
