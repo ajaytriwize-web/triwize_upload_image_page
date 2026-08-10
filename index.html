@@ -990,8 +990,8 @@
     </div>
 
     <script>
-      // ✅ API URL - Change this based on your environment
-      const API_URL = "http://localhost:8000/api/v1/upload_image_to_get_url";
+      const API_URL =
+        "https://page-api.triwize.com/api/v1/upload_image_to_get_url";
 
       const fileInput = document.getElementById("fileInput");
       const uploadArea = document.getElementById("uploadArea");
@@ -1008,13 +1008,6 @@
       const copyBtn = document.getElementById("copyBtn");
 
       let selectedFile = null;
-
-      // Log API URL on page load
-      console.log("✅ API URL configured:", API_URL);
-      console.log("🔍 If upload fails, make sure:");
-      console.log("   1. FastAPI backend is running on port 8000");
-      console.log("   2. CORS middleware is enabled in main.py");
-      console.log("   3. Backend has 'http://localhost:8000' in CORS_ORIGINS");
 
       uploadArea.addEventListener("click", () => fileInput.click());
 
@@ -1099,28 +1092,13 @@
         errorContainer.style.display = "none";
         successContainer.style.display = "none";
 
-        console.log("📤 Starting upload...");
-        console.log("📋 File:", selectedFile.name);
-        console.log(
-          "📦 File size:",
-          (selectedFile.size / 1024).toFixed(2),
-          "KB",
-        );
-        console.log("🌐 API URL:", API_URL);
-
         fetch(API_URL, {
           method: "POST",
           body: formData,
-          // ✅ DON'T set Content-Type! Browser will set it with correct boundary
         })
           .then((response) => {
-            console.log("📥 Response received");
-            console.log("Status:", response.status);
-            console.log("Content-Type:", response.headers.get("content-type"));
-
             if (!response.ok) {
               return response.text().then((text) => {
-                console.error("❌ HTTP Error:", response.status, text);
                 throw new Error(
                   `HTTP ${response.status}: ${text || "Unknown error"}`,
                 );
@@ -1129,8 +1107,6 @@
             return response.json();
           })
           .then((data) => {
-            console.log("✅ API Response:", data);
-
             // Handle different response formats
             if (data.success || data.url) {
               showSuccess(data);
@@ -1141,13 +1117,12 @@
             }
           })
           .catch((error) => {
-            console.error("❌ Upload error:", error);
-            console.error("Error details:", error.message);
-
             let errorMsg = "Upload failed. Check the console and make sure:\n";
-            errorMsg += "1. Backend is running on http://localhost:8000\n";
+            errorMsg +=
+              "1. Backend is running on https://page-api.triwize.com\n";
             errorMsg += "2. CORS middleware is enabled\n";
-            errorMsg += "3. 'http://localhost:8000' is in CORS_ORIGINS\n\n";
+            errorMsg +=
+              "3. 'https://page-api.triwize.com' is in CORS_ORIGINS\n\n";
             errorMsg += "Error: " + error.message;
 
             showError(errorMsg);
@@ -1176,11 +1151,6 @@
         fileNameEl.textContent = filename;
         fileSizeEl.textContent = fileSize + " KB";
 
-        console.log("✅ Upload successful!");
-        console.log("🔗 URL:", imageUrl);
-        console.log("📁 Filename:", filename);
-        console.log("💾 Size:", fileSize, "KB");
-
         setTimeout(() => {
           const urlBox = document.querySelector(".url-box");
           if (urlBox) {
@@ -1195,7 +1165,6 @@
         previewContainer.style.display = "none";
         uploadArea.style.display = "none";
         document.getElementById("errorMessage").textContent = message;
-        console.error("🚨 Error displayed to user:", message);
       }
 
       function copyToClipboard() {
@@ -1203,7 +1172,6 @@
         const urlValue = urlInput.value;
 
         if (!urlValue) {
-          console.warn("No URL to copy");
           return;
         }
 
