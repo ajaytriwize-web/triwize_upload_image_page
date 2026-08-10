@@ -554,10 +554,6 @@
         box-shadow: 0 0 0 3px rgba(255, 144, 84, 0.15);
       }
 
-      .url-input::placeholder {
-        color: #a0a0a0;
-      }
-
       .copy-btn {
         padding: clamp(10px, 2.5vw, 14px) clamp(14px, 3vw, 18px);
         background: white;
@@ -582,10 +578,6 @@
         border: 1.5px solid transparent;
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
-      }
-
-      .copy-btn:active {
-        transform: translateY(0);
       }
 
       .copy-btn.copied {
@@ -696,14 +688,6 @@
           border-color: #ff9054;
         }
       }
-
-      @media (prefers-reduced-motion: reduce) {
-        * {
-          animation-duration: 0.01ms !important;
-          animation-iteration-count: 1 !important;
-          transition-duration: 0.01ms !important;
-        }
-      }
     </style>
   </head>
   <body>
@@ -754,7 +738,7 @@
             <i class="fas fa-check-circle alert-icon"></i>
             <div class="alert-content">
               <h4>Upload Successful! 🛬</h4>
-              <p id="successMessage">Your image has been uploaded to S3</p>
+              <p>Your image has been uploaded to S3</p>
             </div>
           </div>
 
@@ -857,8 +841,15 @@
       copyBtn.addEventListener("click", copyToClipboard);
 
       function handleFileSelect(file) {
+        console.log("File selected:", file.name, "Size:", file.size);
+
         if (!file.type.startsWith("image/")) {
           showError("Please select a valid image file");
+          return;
+        }
+
+        if (file.size === 0) {
+          showError("File is empty. Please select a valid image file.");
           return;
         }
 
@@ -897,7 +888,23 @@
       }
 
       function uploadImage() {
-        if (!selectedFile) return;
+        if (!selectedFile) {
+          showError("No file selected");
+          return;
+        }
+
+        // Check file size again before upload
+        if (selectedFile.size === 0) {
+          showError("File is empty. Please select a valid image.");
+          return;
+        }
+
+        console.log(
+          "Starting upload:",
+          selectedFile.name,
+          selectedFile.size,
+          "bytes",
+        );
 
         const formData = new FormData();
         formData.append("file", selectedFile);
@@ -912,8 +919,11 @@
           body: formData,
         })
           .then((response) => {
+            console.log("Response status:", response.status);
+
             if (!response.ok) {
               return response.text().then((text) => {
+                console.error("Error response:", text);
                 throw new Error(
                   `HTTP ${response.status}: ${text || "Unknown error"}`,
                 );
@@ -922,17 +932,38 @@
             return response.json();
           })
           .then((data) => {
-            // Handle both possible response formats
-            const imageUrl = data.url || data.image_url || "";
+            console.log("Full response data:", data);
 
-            if (imageUrl) {
-              showSuccess(imageUrl);
-            } else {
-              showError("Upload successful but no URL returned from server");
+            // Check if success field exists and is true
+            if (!data.success) {
+              showError(
+                "Backend returned success=false. Message: " +
+                  (data.message || "Unknown error"),
+              );
+              return;
             }
+
+            // Extract URL from response
+            const imageUrl = data.url || data.image_url;
+
+            if (!imageUrl) {
+              console.error("No URL in response:", data);
+              showError(
+                "Upload completed but no URL returned. Response: " +
+                  JSON.stringify(data),
+              );
+              return;
+            }
+
+            console.log("Upload successful! URL:", imageUrl);
+            showSuccess(imageUrl);
           })
           .catch((error) => {
-            showError(error.message);
+            console.error("Upload error:", error);
+            showError(
+              error.message ||
+                "Upload failed. Check browser console for details.",
+            );
           });
       }
 
@@ -955,6 +986,7 @@
       }
 
       function showError(message) {
+        console.error("Showing error:", message);
         loadingContainer.style.display = "none";
         errorContainer.style.display = "block";
         previewContainer.style.display = "none";
@@ -1018,6 +1050,9 @@
           setTimeout(() => toast.remove(), 300);
         }, 2000);
       }
+
+      // Log on page load
+      console.log("Page loaded. API URL:", API_URL);
     </script>
   </body>
 </html>
